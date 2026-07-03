@@ -1,0 +1,27 @@
+body{
+    background-color: black;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card{
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    display: flex;
+    font-size : 15px;
+}
+
+.button{
+    padding: 0.7em;
+    border-radius: 2em;
+}
+
+.signupbutton{
+    border-color: black;
+    background-color: black;
+}

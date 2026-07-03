@@ -1,0 +1,86 @@
+.sidebar {
+  width: 200px;
+  min-height: 100vh;
+  background: #070707;
+  color: rgba(148, 148, 150);
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 3em 5px 5px 5px; /* Push content down */
+}
+
+.sidebar li {
+  padding: 3px;
+  margin-bottom: 1px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sidebar a {
+  color: rgba(148, 148, 150);
+  text-decoration: none;
+  display: block; /* Makes the whole area clickable */
+}
+
+.sidebar a:hover {
+  color: rgba(255, 255, 255);
+  text-decoration: none;
+  display: block; /* Makes the whole area clickable */
+}
+
+.sidebar li:hover {
+  background-color: #393939;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+
+/* Hide buttons on desktop */
+.menu-btn,
+.close-btn {
+  display: none;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .menu-btn {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 15px;
+    z-index: 1100;
+    border: none;
+    background: #3f3f3f;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+}
+
+.status-icon-side {
+  width: 20px;
+  height: 20px;
+  margin-right: 3px;
+  margin-bottom: -4px;
+}

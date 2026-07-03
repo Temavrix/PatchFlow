@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: patchflow
+
+server:
+  port: ${PORT:8080}
+
+app:
+  frontend:
+    url: ${FRONTEND_URL:http://localhost:5173}
+    gemini: ${GEMINI_API_KEY:YOUR_GEMINI_KEY_HERE}
+    openapi: ${OPEN_API_KEY:YOUR_OPEN_API_KEY}
+
+github:
+  client:
+    id: ${GITHUB_ID:YOUR_GITHUB_ID}
+    secret: ${GITHUB_SECRET:YOUR_GITHUB_SECRET}
+
+firebase:
+    project-id: ${FIREBASE_PROJECT_ID:FIREBASE_PROJECT_ID}
+    client-email: ${FIREBASE_CLIENT_EMAIL:firebase}
+    private-key: ${FIREBASE_PRIVATE_KEY:-----BEGIN PRIVATE KEY-----END PRIVATE KEY-----\n}
+    private-key-id: ${FIREBASE_PRIVATE_KEY_ID:firebase}
+    client-id: ${FIREBASE_CLIENT_ID:firebase}
+
+azure:
+    function:
+      url: ${AZURE_FUNCTION_URL:firebase}

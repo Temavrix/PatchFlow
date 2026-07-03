@@ -1,0 +1,379 @@
+.layout {
+  display: flex;
+}
+
+.greydiv {
+  background-color: rgb(37, 37, 37);
+  padding: 0.4rem;
+  color: white;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.team-modal {
+  width: 400px;
+  max-width: 90%;
+  height: 25vh;
+  background: #1f1f1f;
+  color: white;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+}
+
+.project-modal {
+  width: 700px;
+  max-width: 90%;
+  height: 65vh;
+  background: #1f1f1f;
+  color: white;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-icon {
+  cursor: pointer;
+  font-size: 1.3rem;
+}
+
+.project-name {
+  margin-top: 1rem;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.project-summary {
+  margin-top: 1rem;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.project-options {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.option-btn {
+  background: #2d2d2d;
+  border: 1px solid #444;
+  color: white;
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  min-width: 180px;
+  background: #2d2d2d;
+  border: 1px solid #444;
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.status-dropdown-icon-main{
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.status-dropdown-icon-sub {
+  width: 14px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.dropdown-item:hover {
+  background: #3a3a3a;
+}
+
+.project-description {
+  flex: 1;
+  margin-top: 2rem;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.project-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.cancel-btn,
+.create-project-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem 0.5rem;
+  cursor: pointer;
+}
+
+
+.projects-list {
+  margin-top: 1rem;
+}
+
+.project-card {
+  background: rgb(0, 0, 0);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.project-card h3 {
+  margin: 0;
+}
+
+.project-card p {
+  margin: 0.5rem 0;
+  opacity: 0.8;
+}
+
+.project-details-sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 380px;
+  max-width: 100%;
+  height: 100dvh; /* better than 100vh on mobile */
+  background: #1b1b1b;
+  color: white;
+  border-left: 1px solid #333;
+  padding: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  z-index: 1001;
+}
+
+.details-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.close-details {
+  cursor: pointer;
+  font-size: 1.3rem;
+}
+
+.details-section {
+  margin-bottom: 1.5rem;
+}
+
+.details-section h4 {
+  margin-bottom: 0.5rem;
+  color: #9f9f9f;
+}
+
+.details-section p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.delete-project-btn {
+  width: 30%;
+  padding: 0.4rem;
+  background: #343434;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.delete-project-btn:hover {
+  background: #606060;
+}
+
+.project-update-box {
+  margin-bottom: 20px;
+  padding: 2px;
+  background: #181818;
+  border: 1px solid #181818;
+  border-radius: 10px;
+}
+
+.health-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #242424;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.health-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+.project-update-input {
+  width: 100%;
+  min-height: 80px;
+  margin-top: 12px;
+  background: transparent;
+  color: white;
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+
+.project-updates-list {
+  margin-top: 20px;
+}
+
+.update-card {
+  padding: 12px;
+  margin-bottom: 10px;
+  background: #181818;
+  border: 1px solid #2b2b2b;
+  border-radius: 10px;
+}
+
+.health-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.health-dropdown .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 6px;
+  min-width: 180px;
+  background: #2d2d2d;
+  border: 1px solid #444;
+  border-radius: 10px;
+  z-index: 5000;
+}
+
+
+.projects-header,
+.project-row {
+  display: grid;
+
+  grid-template-columns:
+    2fr
+    1fr
+    1fr
+    1fr
+    1fr;
+
+  align-items: center;
+
+  padding: 14px 5px;
+}
+
+.projects-header {
+  color: #888;
+  font-size: 13px;
+}
+
+.project-row {
+  border-top: 1px solid rgba(15, 16, 16);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.project-row:hover {
+  background: #121212;
+}
+
+.project-name-cell {
+  font-weight: 500;
+}
+
+.health-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.priority-indicator {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.status-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.issue-title-edit {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  outline: none;
+}
+
+.priority-icon,
+.priority-dropdown-icon {
+  width: 20px;
+  height: 20px;
+}

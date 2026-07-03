@@ -1,0 +1,406 @@
+body{
+  background-color: rgba(15, 16, 16);
+}
+
+.layout {
+  display: flex;
+}
+
+.greydiv {
+  background-color: rgb(37, 37, 37);
+  border-radius: 0.5em;
+  padding: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.greydiv h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.add-icon {
+  font-size: 1.8rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Content sits beside sidebar */
+.content {
+  margin-left: 200px; /* Same width as sidebar */
+  padding: 20px;
+  width: calc(100% - 200px);
+  box-sizing: border-box;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+    width: 100%;
+    padding-top: 60px; /* Prevent menu button overlap */
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  width: 700px;
+  max-width: 90%;
+  background: rgba(15, 16, 16);
+  color: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-icon {
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.issue-title {
+  width: 100%;
+  margin-top: 1rem;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.issue-description {
+  width: 100%;
+  height: 200px;
+  margin-top: 1rem;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  color: white;
+}
+
+.ai-btn {
+  margin-top: 1rem;
+  float: left;
+  padding: 0.5rem 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.create-btn {
+  margin-top: 1rem;
+  float: right;
+  padding: 0.5rem 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.issue-options {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.option-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #2d2d2d;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  min-width: 180px;
+  background: #2d2d2d;
+  border: 1px solid #444;
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #3a3a3a;
+}
+
+.issues-list {
+  margin-top: 1rem;
+}
+
+.issue-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  cursor: pointer;
+  min-width: 0; /* Important */
+}
+
+.project-link-wrapper {
+  flex-shrink: 0;
+}
+
+.issue-card:hover {
+  background: #151515;
+}
+
+.issue-details-sidebar {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 380px;
+  max-width: 100%;
+  height: 100dvh; /* better than 100vh on mobile */
+  background: #1b1b1b;
+  color: white;
+  border-left: 1px solid #333;
+  padding: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  z-index: 1001;
+}
+
+.details-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 16, 16);
+  z-index: 1000;
+}
+
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.close-details {
+  cursor: pointer;
+  font-size: 1.3rem;
+}
+
+.details-section {
+  margin-bottom: 1.5rem;
+}
+
+.details-section h4 {
+  margin: 0 0 0.5rem 0;
+  color: #9f9f9f;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.details-section p {
+  margin: 0;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.details-footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #333;
+}
+
+.delete-issue-btn {
+  width: 20%;
+  padding: 0.4rem;
+  background: #343434;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.delete-issue-btn:hover {
+  background: #606060;
+}
+
+.priority-container .dropdown-menu {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  z-index: 1000;
+  min-width: 180px;
+}
+
+.priority-container {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* space between priority dot and status icon */
+  position: relative;
+}
+
+.status-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.status-icon {
+  width: 17px;
+  height: 17px;
+  margin-right: 8px;
+}
+
+.status-dropdown-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 1px;
+}
+
+.issue-title-edit {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  outline: none;
+}
+
+.issue-description-edit {
+  width: 100%;
+  min-height: 120px;
+  background: #1a1a1a;
+  color: white;
+  border: 1px solid #1a1a1a;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: none;
+  overflow: hidden;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dropdown-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.project-link-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.project-link-btn {
+  background: #1f1f1f;
+  border: 1px solid #333;
+  color: white;
+  border-radius: 20px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.project-tooltip {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 8px;
+  position: absolute;
+  top: 120%;
+  right: 0;
+  width: 210px;
+  font-size: 15px;
+  background: #181818;
+  border: 1px solid #2d2d2d;
+  border-radius: 12px;
+  padding: 12px;
+  color: white;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: all 0.2s ease;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  white-space: normal;
+}
+
+.status-icon-project {
+  width: 17px;
+  height: 17px;
+  margin-right: 4px;
+  margin-bottom: -3px;
+  flex-shrink: 0;
+}
+
+.project-link-wrapper:hover .project-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.status-icon-but {
+  width: 15px;
+  height: 15px;
+  margin-right: 3px;
+  margin-bottom: -2px;
+}
+
+.issue-name {
+  flex: 1;
+  min-width: 0; /* Important for flex layouts */
+
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.priority-icon,
+.priority-dropdown-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.empty-state {
+  padding: 20px;
+  text-align: center;
+  color: #8b8b8b;
+  font-size: 14px;
+}

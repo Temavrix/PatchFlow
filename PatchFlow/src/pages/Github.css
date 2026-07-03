@@ -1,0 +1,137 @@
+.layout {
+  display: flex;
+}
+
+.github-card {
+  max-width: 700px;
+  margin: 20px auto;
+  background: #1b1b1b;
+  color: white;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+
+.github-connect-btn {
+  margin-top: 12px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.github-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.repo-selector-card {
+  width: 100%;
+  box-sizing: border-box;
+  background: #161618;
+  border: 1px solid #26272b;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.repo-selector-header {
+  margin-bottom: 16px;
+}
+
+.repo-selector-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.repo-selector-header span {
+  font-size: 13px;
+  color: #8b8d98;
+}
+
+.repo-select {
+  width: 100%;
+  background: #1d1e21;
+  border: 1px solid #303136;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  padding: 12px 14px;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+
+.repo-dropdown {
+  position: relative;
+}
+
+.repo-menu {
+  position: absolute;
+  width: 100%;
+  margin-top: 4px;
+  background: #1d1e21;
+  border: 1px solid #303136;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.repo-item {
+  padding: 12px 14px;
+  color: white;
+  cursor: pointer;
+}
+
+.repo-item:hover {
+  background: #3a3b40; /* grey instead of blue */
+}
+
+.selected-repo {
+  margin-top: 16px;
+  padding: 12px;
+  background: #1d1e21;
+  border-radius: 8px;
+  border: 1px solid #2b2c31;
+}
+
+.repo-label {
+  display: block;
+  color: #8b8d98;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.selected-repo p {
+  margin: 0;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.issues-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.issue-card-github {
+  background: #18181b;
+  border: 1px solid #2b2c31;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.issue-card-github strong {
+  display: block;
+  margin-bottom: 4px;
+  color: white;
+}
+
+.issue-card-github p {
+  margin: 0;
+  color: #8b8d98;
+  font-size: 13px;
+}

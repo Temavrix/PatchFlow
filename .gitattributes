@@ -1,0 +1,4 @@
+/mvnw text eol=lf
+*.cmd text eol=crlf
+*.html linguist-detectable=false
+*.css linguist-detectable=false
