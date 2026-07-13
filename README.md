@@ -1,11 +1,21 @@
-# PatchFlow <img height="20" alt="Image" src="https://github.com/user-attachments/assets/f23b203a-9e13-432f-906c-29c0c70e5d56" />
+# PatchFlow <img height="20" alt="Image" src="https://github.com/user-attachments/assets/f23b203a-9e13-432f-906c-29c0c70e5d56"/>
+
+## Our Project is now [live](https://patchflowai.netlify.app/) current Status : [![Netlify Status](https://api.netlify.com/api/v1/badges/3364289d-d800-4af9-a8b3-a8a4e8f42c4d/deploy-status)](https://app.netlify.com/projects/patchflowai/deploys)
 
 ###### An AI Bug tracker for an easier workflow for developers  
+
+
 
 Please consider donating some money to our organization to help fund this project:  
 <a href="https://buymeacoffee.com/mahadhevha" target="_blank">
     <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="30"/>
 </a>
+
+
+
+<img width="200" alt="Image" src="https://github.com/user-attachments/assets/3bcf50e8-9b8e-4c93-9dc6-52ad4674657f"/>
+<img width="200" alt="Image" src="https://github.com/user-attachments/assets/158fc16e-d5f0-4001-8bdd-7e0def3d8df6"/>
+
 
 
 ## Table Of Contents
@@ -26,7 +36,7 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Major UI and UX Bug fixes
+1. Visability changes
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -35,7 +45,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 03-Jul-2026 16:25 HRS (Singapore Standard Time)
+Last Updated: 13-Jul-2026 21:40 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.

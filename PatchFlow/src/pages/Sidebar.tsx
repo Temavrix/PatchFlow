@@ -33,7 +33,7 @@ function Sidebar() {
       <aside className={`sidebar ${isOpen ? "open" : ""}`}>
         <nav>
           <ul>
-            Workspace ▾
+            My Workspace ▾
             <li><Link to="/board"><img src={Boardb} className="status-icon-side"/>Board</Link></li>
             <li><Link to="/issues"><img src={Issuesb} className="status-icon-side"/>My Issues</Link></li>
             <li><Link to="/projects"><img src={Projectsb} className="status-icon-side"/>Projects</Link></li>
@@ -47,6 +47,10 @@ function Sidebar() {
             <li onClick={handleLogout}>Logout</li>
           </ul>
         </nav>
+        
+        <div className="sidebar-footer">
+          © Temavrix 2026
+        </div>
       </aside>
 
       {isOpen && (

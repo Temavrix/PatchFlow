@@ -2,7 +2,7 @@
   width: 200px;
   min-height: 100vh;
   background: #070707;
-  color: rgba(148, 148, 150);
+  color: rgb(255, 255, 255);
   position: fixed;
   top: 0;
   left: 0;
@@ -17,13 +17,13 @@
 }
 
 .sidebar a {
-  color: rgba(148, 148, 150);
+  color: rgb(216, 216, 216);
   text-decoration: none;
   display: block; /* Makes the whole area clickable */
 }
 
 .sidebar a:hover {
-  color: rgba(255, 255, 255);
+  color: rgb(255, 255, 255);
   text-decoration: none;
   display: block; /* Makes the whole area clickable */
 }
@@ -35,6 +35,14 @@
 .sidebar ul {
   list-style: none;
   padding: 0;
+}
+
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 20px;
+    text-align: center;
+    font-size: 13px;
 }
 
 
