@@ -65,7 +65,6 @@ function Githubpage() {
       setPriority("No Priority");
       setProjectId("");
       setProjectName("Project");
-
       setSelectedGitIssue(null);
 
       alert("Issue created");
@@ -85,8 +84,7 @@ function Githubpage() {
   //Fetch github Repos
   useEffect(() => {
     const fetchRepos = async () => {
-      const isConnected =
-        localStorage.getItem("githubConnected") === "true";
+      const isConnected = localStorage.getItem("githubConnected") === "true";
 
       setConnected(isConnected);
 
@@ -96,8 +94,7 @@ function Githubpage() {
       }
 
       try {
-        const firebaseToken =
-          await auth.currentUser?.getIdToken();
+        const firebaseToken = await auth.currentUser?.getIdToken();
 
         const res = await fetch(
           `${import.meta.env.VITE_BACKEND_BASE_URL}/api/github/repos`,
@@ -141,8 +138,7 @@ function Githubpage() {
         return;
       }
 
-      const firebaseToken =
-        await auth.currentUser?.getIdToken();
+      const firebaseToken = await auth.currentUser?.getIdToken();
 
       const res = await fetch(
         `${import.meta.env.VITE_BACKEND_BASE_URL}/api/github/issues?owner=${owner}&repo=${repo}`,
@@ -183,7 +179,6 @@ function Githubpage() {
         );
 
         const snapshot = await getDocs(q);
-
         const projectList = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -227,10 +222,7 @@ function Githubpage() {
                 </div>
 
                 <div className="repo-dropdown">
-                  <button
-                    className="repo-select"
-                    onClick={() => setShowRepos(!showRepos)}
-                  >
+                  <button className="repo-select" onClick={() => setShowRepos(!showRepos)}>
                     {selectedValue || "Choose repository"}
                   </button>
 
@@ -243,8 +235,7 @@ function Githubpage() {
                           onClick={() => {
                             setSelectedValue(repo.full_name);
                             setShowRepos(false);
-                          }}
-                        >
+                        }}>
                           {repo.full_name}
                         </div>
                       ))}

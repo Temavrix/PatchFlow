@@ -63,14 +63,6 @@
   font-weight: bold;
 }
 
-.project-summary {
-  margin-top: 1rem;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: white;
-  font-size: 0.9rem;
-}
 
 .project-options {
   display: flex;
@@ -262,10 +254,17 @@
   height: 16px;
 }
 
+.project-update-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
 .project-update-input {
   width: 100%;
-  min-height: 80px;
-  margin-top: 12px;
+  min-height: 250px;
+  margin-top: 1px;
   background: transparent;
   color: white;
   border: none;

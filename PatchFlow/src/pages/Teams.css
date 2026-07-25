@@ -1,0 +1,13 @@
+.project-update-display {
+    width: 100%;
+    min-height: 100px;      /* Match your textarea height */
+    overflow-y: auto;       /* Scroll when content is long */
+    border: 1px solid #1a1a1a; /* Match textarea border */
+    border-radius: 6px;
+    background: #1a1a1a;
+    font: inherit;          /* Same font as textarea */
+    line-height: 1.5;
+    white-space: pre-wrap;  /* Preserve line breaks */
+    word-break: break-word; /* Wrap long words */
+    box-sizing: border-box;
+}

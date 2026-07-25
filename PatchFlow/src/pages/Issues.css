@@ -180,18 +180,51 @@ body{
   position: fixed;
   right: 0;
   top: 0;
-  width: 380px;
+  width: 75%;
   max-width: 100%;
   height: 100dvh; /* better than 100vh on mobile */
   background: #1b1b1b;
   color: white;
   border-left: 1px solid #333;
-  padding: 1rem;
-  overflow-y: auto;
-  overflow-x: hidden;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   z-index: 1001;
 }
+
+.issue-details-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2.5rem;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.5rem;
+}
+
+.issue-column {
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Mobile */
+@media (max-width: 768px) {
+  .issue-details-content {
+    grid-template-columns: 1fr;
+  }
+
+  .issue-details-sidebar {
+    width: 100%;
+    padding: 1.25rem;
+  }
+
+  .delete-issue-btn {
+    width: 100%;
+  }
+}
+
 
 .details-overlay {
   position: fixed;
@@ -231,7 +264,7 @@ body{
 }
 
 .details-footer {
-  margin-top: 2rem;
+  margin-top: auto;
   padding-top: 1rem;
   border-top: 1px solid #333;
 }

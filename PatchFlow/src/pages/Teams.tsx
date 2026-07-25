@@ -5,6 +5,7 @@ import { doc, updateDoc, collection, query, where, onSnapshot,} from "firebase/f
 
 import "./Issues.css";
 import "./Projects.css";
+import "./Teams.css";
 
 import OnTrackIcon from "./assets/Ontrack.png";
 import AtRiskIcon from "./assets/Atrisk.png";
@@ -115,20 +116,53 @@ function Teams() {
         status: string
         ) => {
         try {
+            const activity = {
+                type: "STATUS_CHANGED",
+                issueTitle: selectedIssue.title,
+                projectName: projects.find(
+                    p => p.id === selectedIssue.projectId
+                )?.projectName,
+                projectId: selectedIssue.projectId,
+                from: selectedIssue.status,
+                to: status,
+                changedBy: auth.currentUser?.displayName,
+                changedAt: new Date().toISOString()
+            };
+
+            console.log(activity);
+
+            await fetch(
+                `${import.meta.env.VITE_BACKEND_BASE_URL}/api/activity`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(activity)
+                }
+            );
+            
             await updateDoc(
             doc(db, "issues", issueId),
-            {
-                status,
-            }
+            { status, }
             );
 
-            setSelectedIssue({
-            ...selectedIssue,
-            status,
-            });
+            setSelectedIssue({...selectedIssue, status,});
         } catch (error) {
             console.error(error);
         }
+    };
+
+
+    const formatDate = (date: Date | string | undefined) => {
+        if (!date) return "No date";
+
+        const d = typeof date === "string" ? new Date(date) : date;
+        return d.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
     };
 
 
@@ -147,14 +181,15 @@ function Teams() {
             <div className="projects-table">
                 {projects.length === 0 ? (
                     <div className="empty-state">
-                    No shared Projects assigned to you.
+                        No shared Projects assigned to you.
                     </div>
                 ) : (
                 <div className="projects-header">
                     <span>Title</span>
-                    <span>Status</span>
+                    <span>Health</span>
                     <span>Priority</span>
                     <span>Project</span>
+                    <span>Status</span>
                 </div>
                 )}
 
@@ -169,21 +204,21 @@ function Teams() {
                         setShowProjectSidebar(true);
                     }}>
                         <div className="project-name-cell">
-                        {project.projectName}
+                            {project.projectName}
                         </div>
 
                         <div>
-                        <img src={projectHealthIcons[ project.healthStatus || "On Track" ]} className="health-icon"/>
+                            <img src={projectHealthIcons[ project.healthStatus || "On Track" ]} className="health-icon"/>
                         </div>
 
                         <div>
-                        <img src={priorityIcons[project.priority]} className="priority-icon"/>
+                            <img src={priorityIcons[project.priority]} className="priority-icon"/>
                         </div>
 
                         <div>{projectIssues.length}</div>
 
                         <div className="status-cell">
-                        <img src={statusIcons[project.status]} className="status-dropdown-icon"/>
+                            <img src={statusIcons[project.status]} className="status-dropdown-icon"/>
                         {project.status}
                         </div>
                     </div>
@@ -202,18 +237,24 @@ function Teams() {
                             </div>
 
                             <div className="details-section">
-                                <h4>Summary</h4>
-                                <p>{selectedProject.summary}</p>
-                            </div>
-
-                            <div className="details-section">
                                 <h4>Description</h4>
-                                <p>{selectedProject.description}</p>
+                                <div className="project-update-display">
+                                    {selectedProject.description}
+                                </div>
                             </div>
 
                             <div className="details-section">
                                 <h4>Latest Update</h4>
-                                <p>{selectedProject.latestUpdate}</p>
+                                <div className="project-update-display">
+                                    {selectedProject.latestUpdate}
+                                </div>
+                            </div>
+
+                            <div className="details-section">
+                                <h4>Weekly Pulse</h4>
+                                <div className="project-update-display">
+                                    hi
+                                </div>
                             </div>
 
                             <div className="details-section">
@@ -228,7 +269,7 @@ function Teams() {
             <div className="issues-table">
                 {issues.length === 0 ? (
                     <div className="empty-state">
-                    No shared Issues assigned to you.
+                        No shared Issues assigned to you.
                     </div>
                 ) : (
                 <div className="projects-header">
@@ -264,79 +305,73 @@ function Teams() {
                         <div className="details-overlay" onClick={() => setShowIssueSidebar(false)}/>
 
                         <aside className="issue-details-sidebar">
-                        <div className="details-header">
-                            <div className="issue-title-edit">
-                                {selectedIssue.title}
-                            </div>
-                            <span className="close-details" onClick={() => setShowIssueSidebar(false)}>✕</span>
-                        </div>
-
-                        <div className="details-section">
-                            <h4>Description</h4>
-                            <p> {selectedIssue.description || "No description"} </p>
-                        </div>
-
-                        <div className="details-section">
-                            <h4>Status</h4>
-
-                            <div className="dropdown">
-                            <button className="option-btn" onClick={() => setShowStatus(!showStatus)}>
-                                <img src={ statusIcons[ selectedIssue.status ]} className="status-dropdown-icon-main" />
-                                {selectedIssue.status}
-                            </button>
-
-                            {showStatus && (
-                                <div className="dropdown-menu">
-                                {[ "Todo", "In Progress", "Code Review", "Backlog",].map((item) => (
-                                    <div key={item} className="dropdown-item status-item"
-                                        onClick={() => {updateIssueStatus(selectedIssue.id,item); setShowStatus(false);}}>
-                                        <img src={statusIcons[item]} className="status-dropdown-icon-sub"/> {item}
-                                    </div>
-                                ))}
+                            <div className="details-header">
+                                <div className="issue-title-edit">
+                                    {selectedIssue.title}
                                 </div>
-                            )}
+                                <span className="close-details" onClick={() => setShowIssueSidebar(false)}>✕</span>
                             </div>
-                        </div>
 
-                        <div className="details-section">
-                            <h4>Priority</h4>
-                            <p><img src={priorityIcons[selectedIssue.priority]} style={{marginBottom:'-6px'}} className="priority-icon"/> {selectedIssue.priority}</p>
-                        </div>
+                            <div className="details-section">
+                                <h4>Description</h4>
+                                <p> {selectedIssue.description || "No description"} </p>
+                            </div>
 
-                        <div className="details-section">
-                            <h4>Project</h4>
-                            <p>
-                                {projects.find(p => p.id === selectedIssue.projectId )?.projectName}
-                            </p>
-                        </div>
+                            <div className="details-section">
+                                <h4>Status</h4>
 
-                        <div className="details-section">
-                            <h4>Created By</h4>
-                            <p>{selectedIssue.userName}</p>
-                        </div>
+                                <div className="dropdown">
+                                <button className="option-btn" onClick={() => setShowStatus(!showStatus)}>
+                                    <img src={ statusIcons[ selectedIssue.status ]} className="status-dropdown-icon-main" />
+                                    {selectedIssue.status}
+                                </button>
 
-                        <div className="details-section">
-                            <h4>Email</h4>
-                            <p>{selectedIssue.userEmail}</p>
-                        </div>
+                                {showStatus && (
+                                    <div className="dropdown-menu">
+                                    {[ "Todo", "In Progress", "Code Review", "Backlog",].map((item) => (
+                                        <div key={item} className="dropdown-item status-item"
+                                            onClick={() => {updateIssueStatus(selectedIssue.id,item); setShowStatus(false);}}>
+                                            <img src={statusIcons[item]} className="status-dropdown-icon-sub"/> {item}
+                                        </div>
+                                    ))}
+                                    </div>
+                                )}
+                                </div>
+                            </div>
 
-                        <div className="details-section">
-                            <h4>Created On</h4>
-                            <p>
-                                {selectedIssue.createdAt?.toDate ? selectedIssue.createdAt.toDate().toLocaleDateString() : "Unknown"}
-                            </p>
-                        </div>
+                            <div className="details-section">
+                                <h4>Priority</h4>
+                                <p><img src={priorityIcons[selectedIssue.priority]} style={{marginBottom:'-6px'}} className="priority-icon"/> {selectedIssue.priority}</p>
+                            </div>
 
-                        <div className="details-section">
-                            <h4>Due Date</h4>
+                            <div className="details-section">
+                                <h4>Project</h4>
+                                <p>{projects.find(p => p.id === selectedIssue.projectId )?.projectName}</p>
+                            </div>
 
-                            <p>{selectedIssue.dueDate || "No due date"}</p>
-                        </div>
+                            <div className="details-section">
+                                <h4>Created By</h4>
+                                <p>{selectedIssue.userName}</p>
+                            </div>
+
+                            <div className="details-section">
+                                <h4>Email</h4>
+                                <p>{selectedIssue.userEmail}</p>
+                            </div>
+
+                            <div className="details-section">
+                                <h4>Created On</h4>
+                                <p>{selectedIssue.createdAt?.toDate ? formatDate(selectedIssue.createdAt.toDate()) : "Unknown"}</p>
+                            </div>
+
+                            <div className="details-section">
+                                <h4>Due Date</h4>
+                                <p>{selectedIssue.dueDate ? formatDate(selectedIssue.dueDate) : "No due date"}</p>
+                            </div>
                         </aside>
                     </>
                 )}
             </div>
-
         </main>
       </div>
     </>

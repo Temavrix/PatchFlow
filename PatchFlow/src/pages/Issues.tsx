@@ -144,28 +144,47 @@ function Issues() {
     }
   };
 
+  useEffect(() => {
+    if (descriptionRef.current) {
+      descriptionRef.current.style.height = "auto";
+      descriptionRef.current.style.height =
+        `${descriptionRef.current.scrollHeight}px`;
+    }
+  }, [selectedIssue, descriptionDraft]);
 
-  const autoResizeTextarea = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    e.target.style.height = "auto";
-    e.target.style.height = `${e.target.scrollHeight}px`;
-  };
+  const updateIssueStatus = async (issue: any, newStatus: string) => {
+  try {
+    const activity = {
+      type: "STATUS_CHANGED",
+      issueTitle: issue.title,
+      projectName: issue.projectName,
+      projectId: issue.projectId,
+      from: issue.status,
+      to: newStatus,
+      changedBy: auth.currentUser?.displayName,
+      changedAt: new Date().toISOString(),
+    };
 
-  const updateIssueStatus = async (
-    issueId: string,
-    newStatus: string
-  ) => {
-    try {
-      await updateDoc(
-        doc(db, "issues", issueId),
-        {status: newStatus,}
-      );
+    await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/activity`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(activity),
+    });
 
-      setStatusDropdownIssue(null);
+    await updateDoc(doc(db, "issues", issue.id), {
+      status: newStatus,
+    });
+
+    if (selectedIssue?.id === issue.id) {
+      setSelectedIssue({
+        ...selectedIssue,
+        status: newStatus,
+      });
+    }
     } catch (error) {
       console.error(error);
-      alert("Failed to update status");
     }
   };
 
@@ -184,9 +203,7 @@ function Issues() {
     }
   };
 
-
   useEffect(() => {
-
     const q = query(
       collection(db, "issues"),
       where("userId", "==", auth.currentUser?.uid),
@@ -201,11 +218,8 @@ function Issues() {
 
       setIssues(data);
     });
-
     return () => unsubscribe();
   }, []);
-
-
 
   useEffect(() => {
     const q = query(
@@ -219,7 +233,6 @@ function Issues() {
         id: doc.id,
         ...doc.data()
       }));
-
       setProjects(data);
     });
 
@@ -259,12 +272,10 @@ function Issues() {
     }
   }, [selectedIssue]);
 
-  
-
   const aiauto = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_BASE_URL}/api/message`,
+        `${import.meta.env.VITE_BACKEND_BASE_URL}/api/descmessage`,
         {
           method: "POST",
           headers: {
@@ -287,6 +298,18 @@ function Issues() {
       setDescription("Failed to generate description");
     }
   };
+
+  const formatDate = (date: Date | string | undefined) => {
+    if (!date) return "No date";
+    const d = typeof date === "string" ? new Date(date) : date;
+
+    return d.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
+  };
+
 
   const renderIssueCard = (issue: any) => {
     const project = projects.find(
@@ -321,7 +344,7 @@ function Issues() {
               <div className="dropdown-menu" onClick={(e) => e.stopPropagation()}>
                 {["Todo","In Progress","Code Review","Backlog"].map((item) => (
                   <div key={item} className="dropdown-item status-item"
-                    onClick={() => updateIssueStatus(issue.id, item)}>
+                    onClick={() => updateIssueStatus(issue, item)}>
                     <img src={statusIcons[item]} alt={item} className="status-dropdown-icon"/>
                     {item}
                   </div>
@@ -483,106 +506,108 @@ function Issues() {
             <div className="details-overlay" onClick={() => setSelectedIssue(null)}/>
 
             <aside className="issue-details-sidebar">
-              <div className="details-header">
-                <input className="issue-title-edit" value={titleDraft} onChange={(e) => setTitleDraft(e.target.value)}
-                onBlur={() => updateIssueField(selectedIssue.id, "title", titleDraft)}/>
-                <span className="close-details" onClick={() => setSelectedIssue(null)}> ✕ </span>
-              </div>
 
-              <div className="details-section">
-                <h4>Description</h4>
-                <textarea ref={descriptionRef} className="issue-description-edit" value={descriptionDraft}
-                  onChange={(e) => {autoResizeTextarea(e); setDescriptionDraft(e.target.value);}}
-                  onBlur={async () =>{
-                    await updateIssueField(selectedIssue.id, "description", descriptionDraft); setSelectedIssue(null); }}
-                  />
-              </div>
+              <div className="issue-details-content">
+                {/* Left Column */}
+                <div className="issue-column">
+                  <div className="details-header">
+                    <input className="issue-title-edit" value={titleDraft} onChange={(e) => setTitleDraft(e.target.value)}
+                    onBlur={() => updateIssueField(selectedIssue.id, "title", titleDraft)}/>
+                    <span className="close-details" onClick={() => setSelectedIssue(null)}> ✕ </span>
+                  </div>
 
-              <div className="details-section">
-                <h4>Status</h4>
-
-                <div className="dropdown">
-                  <button className="option-btn" onClick={() => setShowStatus(!showStatus)}>
-                    <img src={statusIcons[selectedIssue.status]} alt={selectedIssue.status} className="status-dropdown-icon"/>
-                    {selectedIssue.status}
-                  </button>
-
-                  {showStatus && (
-                    <div className="dropdown-menu">
-                      {["Todo", "In Progress", "Code Review", "Backlog"].map((item) => (
-                        <div key={item} className="dropdown-item status-item"
-                          onClick={() => { updateIssueField(selectedIssue.id, "status", item);
-                            setShowStatus(false);}}>
-                          <img src={statusIcons[item]} alt="" className="status-dropdown-icon"/>
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <div className="details-section">
+                    <h4>Description</h4>
+                    <textarea ref={descriptionRef} className="issue-description-edit" value={descriptionDraft}
+                      onChange={(e) => {setDescriptionDraft(e.target.value);}}
+                      onBlur={async () =>{
+                        await updateIssueField(selectedIssue.id, "description", descriptionDraft); setSelectedIssue(null); }}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="details-section">
-                <h4>Priority</h4>
+                {/* Right Column */}
+                <div className="issue-column">
+                  <div className="details-section">
+                    <h4>Status</h4>
 
-                <div className="dropdown">
-                  <button className="option-btn" onClick={() => setShowPriority(!showPriority)}>
-                    <img src={priorityIcons[selectedIssue.priority]} alt={selectedIssue.priority} className="priority-icon"/>
-                      {selectedIssue.priority}
-                  </button>
+                    <div className="dropdown">
+                      <button className="option-btn" onClick={() => setShowStatus(!showStatus)}>
+                        <img src={statusIcons[selectedIssue.status]} alt={selectedIssue.status} className="status-dropdown-icon"/>
+                        {selectedIssue.status}
+                      </button>
 
-                  {showPriority && (
-                    <div className="dropdown-menu" onClick={(e) => e.stopPropagation()}>
-                      {["No Priority", "Urgent", "High", "Medium", "Low"].map((item) => (
-                        <div key={item} className="dropdown-item status-item" onClick={() => { updateIssueField(selectedIssue.id, "priority", item); setShowPriority(false);}}>
-                          <img src={priorityIcons[item]} alt={item} className="priority-dropdown-icon"/>
-                          {item}
+                      {showStatus && (
+                        <div className="dropdown-menu">
+                          {["Todo", "In Progress", "Code Review", "Backlog"].map((item) => (
+                            <div key={item} className="dropdown-item status-item"
+                              onClick={() => {updateIssueStatus(selectedIssue, item); setShowStatus(false);}}>
+                              <img src={statusIcons[item]} alt="" className="status-dropdown-icon"/>
+                              {item}
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      )}
                     </div>
-                  )}
+                  </div>
+
+                  <div className="details-section">
+                    <h4>Priority</h4>
+
+                    <div className="dropdown">
+                      <button className="option-btn" onClick={() => setShowPriority(!showPriority)}>
+                        <img src={priorityIcons[selectedIssue.priority]} alt={selectedIssue.priority} className="priority-icon"/>
+                          {selectedIssue.priority}
+                      </button>
+
+                      {showPriority && (
+                        <div className="dropdown-menu" onClick={(e) => e.stopPropagation()}>
+                          {["No Priority", "Urgent", "High", "Medium", "Low"].map((item) => (
+                            <div key={item} className="dropdown-item status-item" onClick={() => { updateIssueField(selectedIssue.id, "priority", item); setShowPriority(false);}}>
+                              <img src={priorityIcons[item]} alt={item} className="priority-dropdown-icon"/>
+                              {item}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="details-section">
+                    <h4>Project</h4>
+                    <p>{selectedIssue.projectName}</p>
+                  </div>
+
+                  <div className="details-section">
+                    <h4>Created By</h4>
+                    <p><img src={user}className="status-icon"/>{selectedIssue.userName}</p>
+                  </div>
+
+                  <div className="details-section">
+                    <h4>Email</h4>
+                    <p>{selectedIssue.userEmail}</p>
+                  </div>
+
+                  <div className="details-section">
+                    <h4>Created On</h4>
+                    {selectedIssue.createdAt?.toDate ? formatDate(selectedIssue.createdAt.toDate()) : "Unknown"}
+                  </div>
+
+                  <div className="details-section">
+                    <h4>Due Date</h4>
+
+                    <input
+                      className="option-btn "
+                      type="date"
+                      value={selectedIssue.dueDate || ""}
+                      onChange={(e) => setSelectedIssue({
+                          ...selectedIssue,
+                          dueDate: e.target.value,
+                      })}
+                      onBlur={() => updateIssueField(selectedIssue.id, "dueDate", selectedIssue.dueDate)}
+                    />
+                  </div>
                 </div>
-              </div>
-
-              <div className="details-section">
-                <h4>Project</h4>
-                <p>{selectedIssue.projectName}</p>
-              </div>
-
-              <div className="details-section">
-                <h4>Created By</h4>
-                <p><img src={user}className="status-icon"/>{selectedIssue.userName}</p>
-              </div>
-
-              <div className="details-section">
-                <h4>Email</h4>
-                <p>{selectedIssue.userEmail}</p>
-              </div>
-
-              <div className="details-section">
-                <h4>Created On</h4>
-                {selectedIssue.createdAt?.toDate
-                  ? selectedIssue.createdAt.toDate().toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                  : "Unknown"}
-              </div>
-
-              <div className="details-section">
-                <h4>Due Date</h4>
-
-                <input
-                  className="option-btn "
-                  type="date"
-                  value={selectedIssue.dueDate || ""}
-                  onChange={(e) => setSelectedIssue({
-                      ...selectedIssue,
-                      dueDate: e.target.value,
-                  })}
-                  onBlur={() => updateIssueField(selectedIssue.id, "dueDate", selectedIssue.dueDate)}
-                />
               </div>
 
               <div className="details-footer">

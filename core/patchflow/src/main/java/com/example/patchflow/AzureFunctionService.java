@@ -7,6 +7,12 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.google.gson.JsonObject;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -39,5 +45,29 @@ public class AzureFunctionService {
             request,
             String.class
         );
+    }
+
+
+    @Value("${azure.function.pulse.url}")
+    private String functionUrl;
+
+    public String getProjectPulse(String projectId,String projectName,String description) throws Exception {
+
+        JsonObject body = new JsonObject();
+        body.addProperty("projectId", projectId);
+        body.addProperty("projectName", projectName);
+        body.addProperty("description", description);
+
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(functionUrl))
+            .header("Content-Type", "application/json")
+            .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
+            .build();
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return response.body();
     }
 }

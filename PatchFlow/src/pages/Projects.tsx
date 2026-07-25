@@ -24,7 +24,6 @@ function Projects() {
   const [showTeamBox, setShowTeamBox] = useState(false);
   const [projects, setProjects] = useState<any[]>([]);
   const [projectName, setProjectName] = useState("");
-  const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("Backlog");
   const [priority, setPriority] = useState("No Priority");
@@ -56,7 +55,6 @@ function Projects() {
 
       await addDoc(collection(db, "projects"), {
         projectName,
-        summary,
         description,
         status,
         priority,
@@ -74,7 +72,6 @@ function Projects() {
       });
 
       setProjectName("");
-      setSummary("");
       setDescription("");
       setStatus("Backlog");
       setPriority("No Priority");
@@ -84,7 +81,6 @@ function Projects() {
       setProjects((prev) => [{
           id: "temp",
           projectName,
-          summary,
           status,
           priority,
         },
@@ -336,6 +332,45 @@ function Projects() {
     }
   };
 
+  const formatDate = (date: Date | string | undefined) => {
+    if (!date) return "No date";
+
+    const d = typeof date === "string" ? new Date(date) : date;
+
+    return d.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const setPulse = async () => {
+    try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BACKEND_BASE_URL}/api/pulse`,
+          {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                projectId: selectedProject.id,
+                projectName: selectedProject.projectName,
+                description: selectedProject.description
+            })
+          }
+        );
+
+        const pulse = await response.text();
+
+        console.log("Pulse Response:");
+        console.log(pulse);
+
+    } catch (err) {
+        console.error(err);
+    }
+  };
+
 
 
   return (
@@ -357,8 +392,6 @@ function Projects() {
                 </div>
             
                 <input type="text" placeholder="Project name" className="project-name" value={projectName} onChange={(e) => setProjectName(e.target.value)}/>
-            
-                <input type="text" placeholder="Add a short summary..." className="project-summary" value={summary} onChange={(e) => setSummary(e.target.value)}/>
             
                 <div className="project-options">
             
@@ -466,144 +499,129 @@ function Projects() {
                 <>
                   <div className="details-overlay" onClick={() => setShowProjectSidebar(false)}/>
                   <aside className="issue-details-sidebar">
-                    <div className="details-header">
-                      <div className="issue-title-edit">
-                        {selectedProject.projectName}
-                      </div>
-                      <span className="close-details" onClick={() => setShowProjectSidebar(false)}> ✕ </span>
-                    </div>
 
-                    <h4>Latest Update</h4>
-                    <div className="project-update-box">
-                      <div className="health-dropdown">
+                    <div className="issue-details-content">
 
-                        <button className="health-btn" onClick={() => setShowHealthDropdown(!showHealthDropdown)}>
-                          <img src={projectHealthIcons[ selectedProject.healthStatus || "On Track"]} alt="selectedProject.healthStatus"/>
-
-                          {selectedProject.healthStatus || "On Track"}
-                        </button>
-
-                        {showHealthDropdown && (
-                          <div className="dropdown-menu">
-
-                            {["On Track", "At Risk", "Off Track"
-                            ].map((item) => (
-                              <div key={item} className="dropdown-item status-item" onClick={() => updateProjectHealth(selectedProject.id, item)}>
-                                <img src={projectHealthIcons[item]} alt="" className="status-dropdown-icon"/>
-                                {item}
-                              </div>
-                            ))}
+                      {/* Left Column */}
+                      <div className="issue-column">
+                        <div className="details-header">
+                          <div className="issue-title-edit">
+                            {selectedProject.projectName}
                           </div>
-                        )}
-                      </div>
+                          <span className="close-details" onClick={() => setShowProjectSidebar(false)}> ✕ </span>
+                        </div>
 
-                      <textarea className="project-update-input" placeholder="Write a project update..."
-                        value={selectedProject.latestUpdate || ""}
-                        onChange={(e) => updateProjectField(selectedProject.id, "latestUpdate", e.target.value)}/>
-                    </div>
-            
-                    <div className="details-section">
-                      <h4>Summary</h4>
-                      <textarea
-                        className="issue-description-edit"
-                        value={selectedProject.summary || ""}
-                        onChange={(e) =>
-                          updateProjectField(
-                            selectedProject.id,
-                            "summary",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-            
-                    <div className="details-section">
-                      <h4>Description</h4>
-                      <textarea
-                        className="issue-description-edit"
-                        value={selectedProject.description || ""}
-                        onChange={(e) =>
-                          updateProjectField(
-                            selectedProject.id,
-                            "description",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-            
-                    <div className="details-section">
-                      <h4>Status</h4>
-                      <div className="dropdown">
-                        <button className="option-btn" onClick={() => setShowStatus(!showStatus)}> 
-                          <img src={statusIcons[selectedProject.status]} alt="" className="status-dropdown-icon-main"/>
-                          {selectedProject.status}
-                        </button>
+                        <h4>Latest Update</h4>
+                        <div className="project-update-box">
+                          <div className="project-update-actions">
+                            <div className="health-dropdown">
 
-                        {showStatus && (
-                          <div className="dropdown-menu">
-                            {["Todo", "In Progress", "Code Review", "Backlog"].map((item) => (
-                              <div key={item} className="dropdown-item status-item"
-                                onClick={() => { updateProjectField(selectedProject.id, "status", item);
-                                  setShowStatus(false);}}>
-                                <img src={statusIcons[item]} alt="" className="status-dropdown-icon-sub"/>
-                                {item}
-                              </div>
-                            ))}
+                              <button className="health-btn" onClick={() => setShowHealthDropdown(!showHealthDropdown)}>
+                                <img src={projectHealthIcons[ selectedProject.healthStatus || "On Track"]} alt="selectedProject.healthStatus"/>
+                                {selectedProject.healthStatus || "On Track"}
+                              </button>
+
+                              {showHealthDropdown && (
+                                <div className="dropdown-menu">
+                                  {["On Track", "At Risk", "Off Track"
+                                  ].map((item) => (
+                                    <div key={item} className="dropdown-item status-item" onClick={() => updateProjectHealth(selectedProject.id, item)}>
+                                      <img src={projectHealthIcons[item]} alt="" className="status-dropdown-icon"/>
+                                      {item}
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            
+                            <button className="health-btn" onClick={() => setPulse()}>Set Pulse</button>
                           </div>
-                        )}
-                      </div>
+                            
+                          <textarea className="project-update-input" placeholder="Write a project update..."
+                            value={selectedProject.latestUpdate || ""}
+                            onChange={(e) => updateProjectField(selectedProject.id, "latestUpdate", e.target.value)}/>
+                        </div>
+                            
+                          
+                        <div className="details-section">
+                          <h4>Description</h4>
+                          <textarea className="issue-description-edit" value={selectedProject.description || ""}
+                            onChange={(e) => updateProjectField(selectedProject.id, "description", e.target.value)
+                            }
+                          />
+                        </div>
                     </div>
             
-                    <div className="details-section">
-                      <h4>Priority</h4>
-                      <div className="dropdown">
-                        <button className="option-btn" onClick={() => setShowPriority(!showPriority)}>
-                          <img src={priorityIcons[selectedProject.priority]} alt={selectedProject.priority} className="priority-icon"/>
-                          {selectedProject.priority}
-                        </button>
+                    {/* Right Column */}
+                    <div className="issue-column">
+                      <div className="details-section">
+                        <h4>Status</h4>
+                        <div className="dropdown">
+                          <button className="option-btn" onClick={() => setShowStatus(!showStatus)}> 
+                            <img src={statusIcons[selectedProject.status]} alt="" className="status-dropdown-icon-main"/>
+                            {selectedProject.status}
+                          </button>
 
-                        {showPriority && (
-                          <div className="dropdown-menu">
-                            {["No Priority", "Urgent", "High", "Medium", "Low"].map((item) => (
-                              <div key={item} className="dropdown-item status-item" onClick={() => { updateProjectField(selectedProject.id, "priority", item); setShowPriority(false); }}>
-                                  <img src={priorityIcons[item]} alt={item} className="priority-dropdown-icon"/>
-                                {item}
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                          {showStatus && (
+                            <div className="dropdown-menu">
+                              {["Todo", "In Progress", "Code Review", "Backlog"].map((item) => (
+                                <div key={item} className="dropdown-item status-item"
+                                  onClick={() => { updateProjectField(selectedProject.id, "status", item);
+                                    setShowStatus(false);}}>
+                                  <img src={statusIcons[item]} alt="" className="status-dropdown-icon-sub"/>
+                                  {item}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-            
-                    <div className="details-section">
-                      <h4>Created</h4>
-                      <p>
-                        {selectedProject.createdAt?.toDate
-                          ? selectedProject.createdAt.toDate().toLocaleDateString("en-US", {
-                              month: "long",
-                              day: "numeric",
-                              year: "numeric",
-                            })
-                          : "Unknown"}
-                      </p>
-                    </div>
                         
-                    <div className="details-section">
-                      <h4>Issues Linked</h4>
-                      <p>{issueCount}</p>
-                    </div>
+                      <div className="details-section">
+                        <h4>Priority</h4>
+                        <div className="dropdown">
+                          <button className="option-btn" onClick={() => setShowPriority(!showPriority)}>
+                            <img src={priorityIcons[selectedProject.priority]} alt={selectedProject.priority} className="priority-icon"/>
+                            {selectedProject.priority}
+                          </button>
 
-                    <div className="details-section">
-                      <h4>Team Members</h4>
+                          {showPriority && (
+                            <div className="dropdown-menu">
+                              {["No Priority", "Urgent", "High", "Medium", "Low"].map((item) => (
+                                <div key={item} className="dropdown-item status-item" onClick={() => { updateProjectField(selectedProject.id, "priority", item); setShowPriority(false); }}>
+                                    <img src={priorityIcons[item]} alt={item} className="priority-dropdown-icon"/>
+                                  {item}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                        
+                      <div className="details-section">
+                        <h4>Created</h4>
+                        <p>
+                          {selectedProject.createdAt?.toDate
+                            ? formatDate(selectedProject.createdAt.toDate()) : "Unknown"}
+                        </p>
+                      </div>
+                          
+                      <div className="details-section">
+                        <h4>Issues Linked</h4>
+                        <p>{issueCount}</p>
+                      </div>
 
-                      {selectedProject.members?.length > 0 ? (
-                        selectedProject.members.map((email: string) => (
-                          <p key={email}>{email}</p>
-                        ))
-                      ) : (
-                        <p>No members added</p>
-                      )}
+                      <div className="details-section">
+                        <h4>Team Members</h4>
+
+                        {selectedProject.members?.length > 0 ? (
+                          selectedProject.members.map((email: string) => (
+                            <p key={email}>{email}</p>
+                          ))
+                        ) : (
+                          <p>No members added</p>
+                        )}
+                      </div>
                     </div>
                         
                     <div className="details-footer">
@@ -657,6 +675,7 @@ function Projects() {
                           </div>
                         </>
                       )}
+                    </div>
                     </div>
                   </aside>
                 </>

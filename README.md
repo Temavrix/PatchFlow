@@ -23,7 +23,7 @@ Please consider donating some money to our organization to help fund this projec
 - [Features Of PatchFlow](#features)
   * [Teams](#teams)
   * [AI](#ai)
-  * [Github Issues](#github-issues-coming-soon)
+  * [Github Issues](#github-issues)
 - [Issues](#issues)
 
 
@@ -36,7 +36,9 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Visability changes
+1. Visability UI improvements
+2. Fixed Github Issues
+3. Incoming CosmosDB Integrations (Pulse Feature)
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -45,7 +47,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 13-Jul-2026 21:40 HRS (Singapore Standard Time)
+Last Updated: 25-Jul-2026 23:40 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -122,11 +124,14 @@ Project Health Analysis helps teams maintain project momentum and improve the li
 <img height="200" alt="Image" src="https://github.com/user-attachments/assets/3ce38c77-25c1-4c5f-b411-517139170a04" />
 
 
-### Github Issues (Coming Soon)
-PatchFlow integrates directly with GitHub, allowing teams to connect their repositories and bring development workflows into a single platform. Users can securely authenticate their GitHub accounts, browse accessible repositories, and import issues directly into PatchFlow. 
+### Github Issues
+PatchFlow integrates directly with GitHub, allowing teams to connect their repositories and bring development workflows into a single platform. Users can securely authenticate their GitHub accounts, browse accessible repositories, and import issues directly into PatchFlow.  
+
+<img height="200" alt="Image" src="https://github.com/user-attachments/assets/79abc399-6194-49ad-868a-8bca1588d1cc" />
 
 Eliminating the need to manually recreate tasks and ensures that project information remains consistent across both platforms. By centralizing issue management, teams can spend less time switching between tools and more time focusing on development.   
 
+<img height="100" alt="Image" src="https://github.com/user-attachments/assets/52d5c2d9-e132-40bc-bd60-ad41ebd28f7f" />
 
 Once imported, GitHub issues can be managed alongside native PatchFlow tasks through the Kanban Board, Calendar View, and project workspaces.
 

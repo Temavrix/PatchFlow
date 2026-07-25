@@ -1,6 +1,12 @@
 spring:
   application:
     name: patchflow
+  cloud:
+    azure:
+      cosmos:
+        endpoint: ${COSMOS_ENDPOINT:YOUR_COSMOS_ENDPOINT}
+        key: ${COSMOS_KEY:YOUR_COSMOS_KEY}
+        database: ${COSMOS_DATABASE_NAME:YOUR_COSMOS_DATABASE_NAME}
 
 server:
   port: ${PORT:8080}
@@ -25,4 +31,6 @@ firebase:
 
 azure:
     function:
-      url: ${AZURE_FUNCTION_URL:firebase}
+      url: ${AZURE_FUNCTION_URL:YOUR_AZURE_FUNCTION_URL}
+      pulse:
+        url: ${AZURE_PULSE_FUNCTION_URL:YOUR_AZURE_PULSE_FUNCTION_URL}

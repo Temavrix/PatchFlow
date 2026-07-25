@@ -13,11 +13,12 @@ import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 @RestController
 @CrossOrigin(origins = "${app.frontend.url}")
-public class AIController {
+public class Controller {
     private static final String MODEL = "gemini-2.5-flash";
     private static final String MODELNEW = "gemini-3.5-flash";
     private static final String ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
@@ -79,51 +80,7 @@ public class AIController {
     }
 
 
-
-    //currently depereciated and moved to azure
-    public String sendPromptGemmafour(String prompt) throws Exception {
-        // Create simple user message (OpenRouter format)
-        JsonObject message = new JsonObject();
-        message.addProperty("role", "user");
-        message.addProperty("content", prompt);
-    
-        JsonArray messages = new JsonArray();
-        messages.add(message);
-    
-        // Create request body
-        JsonObject body = new JsonObject();
-        body.addProperty("model", "google/gemma-4-31b-it:free");
-        body.add("messages", messages);
-        body.addProperty("max_tokens", 300);
-        body.addProperty("temperature", 0.5);
-    
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
-    
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(ENDPOINT))
-                .header("Authorization", "Bearer " + OPEN_API_KEY)
-                .header("Content-Type", "application/json")
-                .header("HTTP-Referer", "http://localhost")
-                .header("X-Title", "MyJavaApp") // Optional
-                .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
-                .build();
-    
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-    
-        JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
-    
-        if (!jsonResponse.has("choices")) {
-            return "API Error:\n" + jsonResponse;
-        }
-        return jsonResponse
-                .getAsJsonArray("choices")
-                .get(0).getAsJsonObject()
-                .getAsJsonObject("message")
-                .get("content").getAsString();
-    }
-
-
-
-    @PostMapping("/api/message")
+    @PostMapping("/api/descmessage")
     public String receiveMessage(
         @RequestBody MessageRequest request) throws Exception{
     
@@ -196,4 +153,17 @@ public class AIController {
             return "Error: " + e.getMessage();
         }
     }
+
+
+    @PostMapping("/api/pulse")
+    public String getPulse(@RequestBody PulseRequest request) throws Exception {
+
+        return azureFunctionService.getProjectPulse(
+                request.getProjectId(),
+                request.getProjectName(),
+                request.getDescription()
+        );
+    }
+
+
 }

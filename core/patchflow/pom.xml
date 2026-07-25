@@ -71,6 +71,12 @@
         </dependency>
 
 		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-cosmos</artifactId>
+			<version>4.75.0</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>com.google.firebase</groupId>
 			<artifactId>firebase-admin</artifactId>
 			<version>9.3.0</version>

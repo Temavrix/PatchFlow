@@ -7,9 +7,7 @@ function GithubCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const code =
-      new URLSearchParams(window.location.search)
-        .get("code");
+    const code = new URLSearchParams(window.location.search).get("code");
 
     if (!code) return;
 
@@ -22,11 +20,10 @@ function GithubCallback() {
         }
 
         try {
-          const firebaseToken =
-            await user.getIdToken();
+          const firebaseToken = await user.getIdToken();
 
           const response = await fetch(
-            `${window.location.origin}/api/github/exchange`,
+            `${import.meta.env.VITE_BACKEND_BASE_URL}/api/github/exchange`,
             {
               method: "POST",
               headers: {
@@ -38,22 +35,13 @@ function GithubCallback() {
           );
 
           if (!response.ok) {
-            const errorText =
-              await response.text();
+            const errorText = await response.text();
 
             console.error(errorText);
             return;
           }
 
-          const data =
-            await response.json();
-
-          console.log(data);
-
-          localStorage.setItem(
-            "githubConnected",
-            "true"
-          );
+          localStorage.setItem("githubConnected", "true");
 
           navigate("/github");
         } catch (error) {
