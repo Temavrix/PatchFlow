@@ -215,6 +215,17 @@
 }
 
 .delete-project-btn {
+  width: 27%;
+  padding: 0.4rem;
+  background: #343434;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.delete-project-btn-in{
   width: 30%;
   padding: 0.4rem;
   background: #343434;

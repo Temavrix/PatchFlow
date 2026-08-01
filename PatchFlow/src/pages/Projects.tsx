@@ -20,6 +20,8 @@ import Urgent from "./assets/Urgent.png";
 function Projects() {
   const [showModal, setShowModal] = useState(false);
   const [showAI, setShowAI] = useState(false);
+  const [showPulse, setShowPulse] = useState(false);
+  const [showPulseDes, setShowPulseDes] = useState("");
   const [showAIDes, setShowAIDes] = useState("");
   const [showTeamBox, setShowTeamBox] = useState(false);
   const [projects, setProjects] = useState<any[]>([]);
@@ -362,12 +364,10 @@ function Projects() {
         );
 
         const pulse = await response.text();
-
-        console.log("Pulse Response:");
-        console.log(pulse);
-
+        setShowPulseDes(pulse);
+        setShowPulse(true);
     } catch (err) {
-        console.error(err);
+        alert("Error");
     }
   };
 
@@ -621,14 +621,33 @@ function Projects() {
                         ) : (
                           <p>No members added</p>
                         )}
-                      </div>
+                      </div>{' '}
+                      <button className="delete-project-btn-in"
+                        onClick={() => deleteProject( selectedProject.id, selectedProject.projectName)}>
+                        Delete Project
+                      </button>
                     </div>
                         
                     <div className="details-footer">
                       <button className="delete-project-btn"
-                        onClick={() => deleteProject( selectedProject.id, selectedProject.projectName)}>
-                        Delete
-                      </button>{' '}
+                      onClick={() => {
+                          setShowPulse(true);
+                          setPulse();
+                        }}>
+                        View Pulse
+                      </button>{showPulse &&(
+                        <>
+                          <div className="modal-overlay" onClick={() => setShowPulse(false)}>
+                            <div className="project-modal" onClick={(e) => e.stopPropagation()}>
+                              <div className="modal-header">
+                                <h3>Project Pulse</h3>
+                                <span className="close-icon" onClick={() => setShowPulse(false)}> ✕ </span>
+                              </div>
+                              <textarea placeholder="Fetching Project Pulse..." className="project-description" value={showPulseDes}/>
+                            </div>
+                          </div>
+                        </>
+                      )}{' '}
                       <button className="delete-project-btn"
                         onClick={() => {
                           analyzeProject(selectedProject.id);
@@ -639,10 +658,8 @@ function Projects() {
                         <>
                           <div className="modal-overlay" onClick={() => setShowModal(false)}>
                             <div className="project-modal" onClick={(e) => e.stopPropagation()}>
-
                               <div className="modal-header">
                                 <h3>Project Analyzer</h3>
-                          
                                 <span className="close-icon" onClick={() => setShowAI(false)}> ✕ </span>
                               </div>
                               <textarea placeholder="Performing project health checks..." className="project-description" value={showAIDes}/>
@@ -661,7 +678,6 @@ function Projects() {
 
                               <div className="modal-header">
                                 <h3>Add Team Member</h3>
-                          
                                 <span className="close-icon" onClick={() => setShowTeamBox(false)}> ✕ </span>
                               </div>
                               <textarea

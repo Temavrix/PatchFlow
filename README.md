@@ -23,6 +23,7 @@ Please consider donating some money to our organization to help fund this projec
 - [Features Of PatchFlow](#features)
   * [Teams](#teams)
   * [AI](#ai)
+  * [Pulse](#pulse)
   * [Github Issues](#github-issues)
 - [Issues](#issues)
 
@@ -36,9 +37,9 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Visability UI improvements
+1. UI improvements
 2. Fixed Github Issues
-3. Incoming CosmosDB Integrations (Pulse Feature)
+3. Introducing Pulse: AI-powered project analytics engine that transforms issue activity history into concise engineering insights using llm. Analyzing workflow transitions, identifies progress trends, highlights bottlenecks and generates cached project health reports from real-time activity data.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -47,7 +48,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 25-Jul-2026 23:40 HRS (Singapore Standard Time)
+Last Updated: 1-Aug-2026 15:10 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -118,10 +119,19 @@ Powered by Google AI the Project Health Analysis uses AI to evaluate the overall
 
 Users receive a concise summary highlighting project progress, bottlenecks, and areas requiring attention. The AI also provides recommendations to help teams prioritize work and address critical issues more effectively. By offering data-driven insights, the feature supports better planning and informed decision-making. 
 
-Project Health Analysis helps teams maintain project momentum and improve the likelihood of successful delivery.  
+<img height="200" alt="Image" src="https://github.com/user-attachments/assets/4ee510b0-1555-4767-9d13-964880bf28ba" />
 
-<img height="200" alt="Image" src="https://github.com/user-attachments/assets/c7eb530d-d1f9-469d-a358-5efececf9d39" /> 
-<img height="200" alt="Image" src="https://github.com/user-attachments/assets/3ce38c77-25c1-4c5f-b411-517139170a04" />
+Project Health Analysis helps teams maintain project momentum and improve the likelihood of successful delivery. 
+
+
+### Pulse
+The Weekly Project Pulse is an AI-powered analytics feature that generates a periodic health summary for each project by processing issue status transition events. Status changes are stored in Azure Cosmos DB and queried by an Azure Function, which constructs a chronological activity timeline and submits it to an large language model for analysis. 
+
+The model produces a structured report covering project health, productivity trends and workflow bottlenecks. To minimize latency, API usage and inference costs, generated reports are cached in Redis with a six-day TTL. 
+
+<img height="200"  alt="Image" src="https://github.com/user-attachments/assets/2f5c1489-f02d-4632-9003-946899e21179" />
+
+After a pulse is successfully generated and cached, the processed activity records are removed from Cosmos DB, enabling the next pulse to analyze only newly accumulated project activity.
 
 
 ### Github Issues
@@ -152,4 +162,4 @@ Thank you for your kind co-operation :-)
 NexaView Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 1.5
+Version 1.7
