@@ -20,6 +20,8 @@ import Low from "./assets/Low.png";
 import Medium from "./assets/Medium.png";
 import High from "./assets/High.png";
 import Urgent from "./assets/Urgent.png";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 function Teams() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -29,6 +31,8 @@ function Teams() {
   const [selectedIssue, setSelectedIssue] = useState<any>(null);
   const [showIssueSidebar, setShowIssueSidebar] = useState(false);
   const [showStatus, setShowStatus] = useState(false);
+  const [pulseLoading, setPulseLoading] = useState(false);
+  const [pulse, setPulse] = useState("");
 
 
   const statusIcons: Record<string, string> = {
@@ -165,6 +169,47 @@ function Teams() {
         });
     };
 
+    const generatePulse = async (project: any) => {
+        try {
+            setPulseLoading(true);
+
+            const response = await fetch(
+                `${import.meta.env.VITE_BACKEND_BASE_URL}/api/pulse`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        projectId: project.id,
+                        projectName: project.projectName,
+                        description: project.description,
+                    }),
+                }
+            );
+
+            const newPulse = await response.text();
+            setPulse(newPulse);
+
+        } catch (err) {
+            console.error(err);
+            setPulse("");
+        } finally {
+            setPulseLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        setPulse("");
+    }, [selectedProject?.id]);
+
+    useEffect(() => {
+        if (!selectedProject) return;
+
+        setPulse("");
+        generatePulse(selectedProject);
+    }, [selectedProject?.id]);
+
 
 
   return (
@@ -232,7 +277,6 @@ function Teams() {
                                 <div className="issue-title-edit">
                                     {selectedProject.projectName}
                                 </div>
-
                                 <span className="close-details" onClick={() => setShowProjectSidebar(false)}>✕</span>
                             </div>
 
@@ -244,16 +288,35 @@ function Teams() {
                             </div>
 
                             <div className="details-section">
-                                <h4>Latest Update</h4>
+                                <div className="section-header">
+                                    <h4>Latest Update</h4> 
+                                    <button className="health-btn">
+                                        <img src={projectHealthIcons[ selectedProject.healthStatus || "On Track"]} alt="selectedProject.healthStatus"/>
+                                        {selectedProject.healthStatus || "On Track"}
+                                    </button>
+                                </div>
                                 <div className="project-update-display">
-                                    {selectedProject.latestUpdate}
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                        {selectedProject.latestUpdate}
+                                    </ReactMarkdown>
                                 </div>
                             </div>
 
                             <div className="details-section">
-                                <h4>Weekly Pulse</h4>
+                                <div className="section-header">
+                                    <h4>Pulse</h4>
+                                </div>
+
                                 <div className="project-update-display">
-                                    hi
+                                    {pulseLoading ? (
+                                        <p>Loading...</p>
+                                    ) : pulse ? (
+                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                            {pulse}
+                                        </ReactMarkdown>
+                                    ) : (
+                                        <p>No pulse generated yet.</p>
+                                    )}
                                 </div>
                             </div>
 
@@ -303,7 +366,6 @@ function Teams() {
                 ))}{showIssueSidebar && selectedIssue && (
                     <>
                         <div className="details-overlay" onClick={() => setShowIssueSidebar(false)}/>
-
                         <aside className="issue-details-sidebar">
                             <div className="details-header">
                                 <div className="issue-title-edit">

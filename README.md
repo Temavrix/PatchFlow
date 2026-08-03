@@ -37,9 +37,13 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. UI improvements
-2. Fixed Github Issues
-3. Introducing Pulse: AI-powered project analytics engine that transforms issue activity history into concise engineering insights using llm. Analyzing workflow transitions, identifies progress trends, highlights bottlenecks and generates cached project health reports from real-time activity data.
+1. Introducing Pulse: AI-powered project analytics engine
+
+2. Fixed bugs and stability issues in Teams
+
+3. UI improvements
+
+4. Markdown viewing support has been added.
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -48,7 +52,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 1-Aug-2026 15:10 HRS (Singapore Standard Time)
+Last Updated: 3-Aug-2026 19:10 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -162,4 +166,4 @@ Thank you for your kind co-operation :-)
 NexaView Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 1.7
+Version 1.8

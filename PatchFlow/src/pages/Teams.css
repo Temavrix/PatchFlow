@@ -1,6 +1,7 @@
 .project-update-display {
     width: 100%;
     min-height: 100px;      /* Match your textarea height */
+    max-height: 250px;
     overflow-y: auto;       /* Scroll when content is long */
     border: 1px solid #1a1a1a; /* Match textarea border */
     border-radius: 6px;
@@ -10,4 +11,57 @@
     white-space: pre-wrap;  /* Preserve line breaks */
     word-break: break-word; /* Wrap long words */
     box-sizing: border-box;
+}
+
+.issue-details-sidebar-team {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 75%;
+  max-width: 100%;
+  height: 100dvh;
+
+  background: #1b1b1b;
+  color: white;
+  border-left: 1px solid #333;
+  padding: 2rem;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: scroll !important;
+   border: 2px solid red;
+}
+
+.project-update-display {
+    min-height: 140px;
+    max-height: 300px;
+
+    overflow-y: auto;
+
+    padding: 12px;
+    border-radius: 8px;
+    background: #1a1a1a;
+}
+
+aside.issue-details-sidebar {
+    overflow-y: scroll;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.section-header h4 {
+    margin: 0;
+}
+
+.section-header .health-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }

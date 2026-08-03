@@ -10,6 +10,8 @@ import TodoIcon from "./assets/pTodo.png";
 import InProgressIcon from "./assets/pInProgress.png";
 import CodeReviewIcon from "./assets/pCodeReview.png";
 import BacklogIcon from "./assets/pBacklog.png";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import Nopriority from "./assets/Nopriority.png";
 import Low from "./assets/Low.png";
@@ -18,6 +20,7 @@ import High from "./assets/High.png";
 import Urgent from "./assets/Urgent.png";
 
 function Projects() {
+  const [isEditingUpdate, setIsEditingUpdate] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showAI, setShowAI] = useState(false);
   const [showPulse, setShowPulse] = useState(false);
@@ -301,6 +304,10 @@ function Projects() {
     return unsubscribe;
   }, [selectedProject]);
 
+  useEffect(() => {
+    setIsEditingUpdate(false);
+  }, [selectedProject?.id]);
+
 
   const addMemberToProject = async () => {
     try {
@@ -533,21 +540,45 @@ function Projects() {
                                 </div>
                               )}
                             </div>
-                            
                             <button className="health-btn" onClick={() => setPulse()}>Set Pulse</button>
+
+                            {!isEditingUpdate && (
+                              <button className="health-btn" onClick={() => setIsEditingUpdate(true)}>
+                                Edit Update
+                              </button>
+                            )}
                           </div>
-                            
-                          <textarea className="project-update-input" placeholder="Write a project update..."
-                            value={selectedProject.latestUpdate || ""}
-                            onChange={(e) => updateProjectField(selectedProject.id, "latestUpdate", e.target.value)}/>
+                          
+                          {isEditingUpdate ? (
+                            <>
+                              <textarea className="project-update-input"
+                                autoFocus
+                                placeholder="Write a project update..."
+                                value={selectedProject.latestUpdate || ""}
+                                onChange={(e) => updateProjectField(
+                                    selectedProject.id, "latestUpdate", e.target.value
+                                )}/>
+
+                              <div className="project-update-buttons">
+                                <button className="health-btn" onClick={() => setIsEditingUpdate(false)}>
+                                  Save Update
+                                </button>
+                              </div>
+                            </>
+                          ) : (
+                            <div className="markdown-preview">
+                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {selectedProject.latestUpdate || "*No project update yet.*"}
+                              </ReactMarkdown>
+                            </div>
+                          )}
                         </div>
                             
                           
                         <div className="details-section">
                           <h4>Description</h4>
                           <textarea className="issue-description-edit" value={selectedProject.description || ""}
-                            onChange={(e) => updateProjectField(selectedProject.id, "description", e.target.value)
-                            }
+                            onChange={(e) => updateProjectField(selectedProject.id, "description", e.target.value)}
                           />
                         </div>
                     </div>
@@ -638,12 +669,17 @@ function Projects() {
                       </button>{showPulse &&(
                         <>
                           <div className="modal-overlay" onClick={() => setShowPulse(false)}>
-                            <div className="project-modal" onClick={(e) => e.stopPropagation()}>
+                            <div className="project-modal-pulse" onClick={(e) => e.stopPropagation()}>
                               <div className="modal-header">
                                 <h3>Project Pulse</h3>
-                                <span className="close-icon" onClick={() => setShowPulse(false)}> ✕ </span>
+                                <span className="close-icon" onClick={() => setShowPulse(false)}>✕</span>
                               </div>
-                              <textarea placeholder="Fetching Project Pulse..." className="project-description" value={showPulseDes}/>
+
+                              <div className="modal-content">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                  {showPulseDes}
+                                </ReactMarkdown>
+                              </div>
                             </div>
                           </div>
                         </>

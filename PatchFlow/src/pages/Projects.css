@@ -42,6 +42,15 @@
   padding: 1.25rem;
 }
 
+.project-modal-pulse {
+  background: #242424;
+  border-radius: 20px;
+  padding: 24px;
+  width: min(900px, 90vw);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;
