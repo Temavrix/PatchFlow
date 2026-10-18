@@ -2,6 +2,7 @@ import {useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import {db, auth } from "../firebase";
 import {addDoc, collection, serverTimestamp, getDocs, query, where} from "firebase/firestore";
+import { useAlert } from "../components/Alert";
 import "./Github.css";
 
 function Githubpage() {
@@ -21,6 +22,7 @@ function Githubpage() {
   const [projectId, setProjectId] = useState("");
   const [projectName, setProjectName] = useState("Project");
   const [projects, setProjects] = useState<any[]>([]);
+  const {showAlert} = useAlert();
 
   const connectGithub = async () => {
     try {
@@ -34,7 +36,7 @@ function Githubpage() {
         `&scope=repo` +
         `&redirect_uri=${encodeURIComponent(redirectUri)}`;
     } catch (err) {
-      console.error(err);
+      showAlert(`Failed to connect to Github`,"error");
     }
   };
 
@@ -42,7 +44,7 @@ function Githubpage() {
   const createIssue = async () => {
     try {
       if (!selectedGitIssue?.title?.trim()) {
-        alert("Issue title is required");
+        showAlert("Issue title is required","warning");
         return;
       }
 
@@ -67,10 +69,9 @@ function Githubpage() {
       setProjectName("Project");
       setSelectedGitIssue(null);
 
-      alert("Issue created");
+      showAlert("Issue created","success");
     } catch (error) {
-      console.error(error);
-      alert("Failed to create issue");
+      showAlert("Failed to create issue","error");
     }
   };
 
@@ -115,12 +116,11 @@ function Githubpage() {
         if (Array.isArray(data)) {
           setRepos(data);
         } else {
-          console.error(data);
           localStorage.removeItem("githubConnected");
           setConnected(false);
         }
       } catch (err) {
-        console.error(err);
+        showAlert(`Failed to fetch token from Github`,"error");
       }
     };
 
@@ -159,7 +159,6 @@ function Githubpage() {
       if (Array.isArray(data)) {
         setIssues(data);
       } else {
-        console.error(data);
         setIssues([]);
       }
     };
@@ -186,7 +185,7 @@ function Githubpage() {
 
         setProjects(projectList);
       } catch (error) {
-        console.error(error);
+        showAlert(`Failed to load repos from Github`,"error");
       }
     };
 

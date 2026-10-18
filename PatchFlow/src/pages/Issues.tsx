@@ -3,6 +3,9 @@ import Sidebar from "./Sidebar";
 import { db, auth } from "../firebase";
 import { addDoc, collection, serverTimestamp, onSnapshot, query, orderBy, updateDoc, deleteDoc, doc} from "firebase/firestore";
 import { where } from "firebase/firestore";
+import { useAlert } from "../components/Alert";
+import { useConfirmDialog } from "../components/ConfirmDialog";
+
 import "./Issues.css";
 import TodoIcon from "./assets/Todo.png";
 import InProgressIcon from "./assets/InProgress.png";
@@ -47,6 +50,8 @@ function Issues() {
   const [showProject, setShowProject] = useState(false);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const [titleDraft, setTitleDraft] = useState("");
+  const {showAlert} = useAlert();
+  const {confirmDialog} = useConfirmDialog();
 
 
   const [statusDropdownIssue, setStatusDropdownIssue] = useState<string | null>(null);
@@ -90,7 +95,7 @@ function Issues() {
   const createIssue = async () => {
     try {
       if (!title.trim()) {
-        alert("Issue title is required");
+        showAlert("Issue title is required","warning");
         return;
       }
 
@@ -120,10 +125,9 @@ function Issues() {
 
       setShowModal(false);
 
-      alert("Issue created");
+      showAlert("Issue created","success");
     } catch (error) {
-      console.error(error);
-      alert("Failed to create issue");
+      showAlert("Failed to create issue","error");
     }
   };
 
@@ -139,8 +143,7 @@ function Issues() {
 
       setPriorityDropdownIssue(null);
     } catch (error) {
-      console.error(error);
-      alert("Failed to update priority");
+      showAlert("Failed to update priority","error");
     }
   };
 
@@ -184,7 +187,7 @@ function Issues() {
       });
     }
     } catch (error) {
-      console.error(error);
+      showAlert(`Failed to update issue status`,"error");
     }
   };
 
@@ -199,7 +202,7 @@ function Issues() {
         setSelectedIssue(null);
       }
     } catch (error) {
-      console.error(error);
+      showAlert(`Failed to update issue`,"error");
     }
   };
 
@@ -240,20 +243,23 @@ function Issues() {
   }, []);
   
 
-  const deleteIssue = async (issueId: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this issue?"
-    );
+  const deleteIssue = async (issueId: string, issueTitle: string) => {
+    const confirmed = await confirmDialog({
+      title: "Delete issue?",
+      message: `Are you sure you want to delete ${issueTitle}? This action cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+    });
 
     if (!confirmed) return;
 
     try {
       await deleteDoc(doc(db, "issues", issueId));
+
       setSelectedIssue(null);
-      alert("Issue deleted");
+      showAlert(`${issueTitle} deleted`, "success");
     } catch (error) {
-      console.error(error);
-      alert("Failed to delete issue");
+      showAlert(`Failed to delete ${issueTitle}`, "error");
     }
   };
 
@@ -294,8 +300,7 @@ function Issues() {
       const result = await response.text();
       setDescription(result);
     } catch (error) {
-      console.error(error);
-      setDescription("Failed to generate description");
+      showAlert(`Failed to generate description`,"error");
     }
   };
 
@@ -611,7 +616,7 @@ function Issues() {
               </div>
 
               <div className="details-footer">
-                <button className="delete-issue-btn" onClick={() => deleteIssue(selectedIssue.id)}>
+                <button className="delete-issue-btn" onClick={() => deleteIssue(selectedIssue.id, selectedIssue.title)}>
                   Delete
                 </button>
               </div>

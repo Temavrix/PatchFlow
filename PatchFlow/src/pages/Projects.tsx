@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import Sidebar from "./Sidebar.tsx";
 import { db, auth } from "../firebase";
-import { addDoc, collection, serverTimestamp, onSnapshot, query, orderBy, where, deleteDoc, doc, getDocs, updateDoc, arrayUnion} from "firebase/firestore";
+import { addDoc, collection, serverTimestamp, onSnapshot, query, orderBy, where, deleteDoc, doc, getDocs, updateDoc, arrayUnion, arrayRemove,} from "firebase/firestore";
+import { useAlert } from "../components/Alert";
+import { useConfirmDialog } from "../components/ConfirmDialog";
 import "./Projects.css";
 import OnTrackIcon from "./assets/Ontrack.png";
 import AtRiskIcon from "./assets/Atrisk.png";
@@ -40,6 +42,8 @@ function Projects() {
   const [showHealthDropdown, setShowHealthDropdown] = useState(false);
   const [issues, setIssues] = useState<any[]>([]);
   const [memberEmail, setMemberEmail] = useState("");
+  const {showAlert} = useAlert();
+  const {confirmDialog} = useConfirmDialog();
 
   const [projectStats, setProjectStats] = useState<
     Record<
@@ -54,7 +58,7 @@ function Projects() {
   const createProject = async () => {
     try {
       if (!projectName.trim()) {
-        alert("Project name is required");
+        showAlert("Project name is required","warning");
         return;
       }
 
@@ -82,7 +86,7 @@ function Projects() {
       setPriority("No Priority");
 
       setShowModal(false);
-      alert("Project created");
+      showAlert("Project created","success");
       setProjects((prev) => [{
           id: "temp",
           projectName,
@@ -92,7 +96,7 @@ function Projects() {
         ...prev,
       ]);
     } catch (error) {
-      alert("Failed to create project");
+      showAlert("Failed to create project","error");
     }
   };
 
@@ -137,7 +141,7 @@ function Projects() {
         [field]: value
       });
     } catch (error) {
-      console.error(error);
+      showAlert(`Failed to update project`,"error");
     }
   };
 
@@ -163,13 +167,18 @@ function Projects() {
 
       setShowHealthDropdown(false);
     } catch (error) {
-      console.error(error);
+      showAlert(`Failed to update project health`,"error");
     }
   };
 
 
   const deleteProject = async (projectId: string, projectName: string) => {
-    const confirmed = window.confirm(`Delete "${projectName}" and all linked issues?`);
+    const confirmed = await confirmDialog({
+      title: "Delete issue?",
+      message: `Are you sure you want to delete ${projectName} and all linked issues? This action cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+    });
 
     if (!confirmed) return;
 
@@ -194,13 +203,12 @@ function Projects() {
       setShowProjectSidebar(false);
       setSelectedProject(null);
 
-      alert("Project and related issues deleted");
+      showAlert(`${projectName} and related issues deleted`,"success");
       setProjects((prev) =>
         prev.filter((p) => p.id !== projectId)
       );
     } catch (error) {
-      console.error(error);
-      alert("Failed to delete project");
+      showAlert(`Failed to delete ${projectName}`,"error");
     }
   };
 
@@ -230,7 +238,7 @@ function Projects() {
 
       setShowAIDes(analysis);
     } catch (error) {
-      console.error(error);
+      showAlert(`Project analyze call failed`,"error");
     }
   };
 
@@ -312,7 +320,7 @@ function Projects() {
   const addMemberToProject = async () => {
     try {
       if (!memberEmail.trim()) {
-        alert("Enter an email");
+        showAlert("Please enter an email","warning");
         return;
       }
 
@@ -334,10 +342,49 @@ function Projects() {
       setMemberEmail("");
       setShowTeamBox(false);
 
-      alert("Member added");
+      showAlert("Member added","success");
     } catch (error) {
-      console.error(error);
-      alert("Failed to add member");
+      showAlert("Please ensure member has registered","error");
+    }
+  };
+
+  const removeMemberFromProject = async (email: string) => {
+    const confirmed = await confirmDialog({
+      title: "Remove team member?",
+      message: `Are you sure you want to remove ${email} from ${selectedProject.projectName}?`,
+      confirmText: "Remove",
+      cancelText: "Cancel",
+    });
+
+    if (!confirmed) return;
+
+    try {
+      await updateDoc(doc(db, "projects", selectedProject.id), {
+        members: arrayRemove(email),
+      });
+
+      setSelectedProject((prev: any) => ({
+        ...prev,
+        members: (prev.members || []).filter(
+          (member: string) => member !== email
+        ),
+      }));
+
+      setProjects((prev) =>
+        prev.map((project) =>
+          project.id === selectedProject.id
+            ? {
+                ...project,
+                members: (project.members || []).filter(
+                  (member: string) => member !== email
+                ),
+              }
+            : project
+        )
+      );
+      showAlert("Team member removed", "success");
+    } catch (error) {
+      showAlert("Failed to remove team member", "error");
     }
   };
 
@@ -374,7 +421,7 @@ function Projects() {
         setShowPulseDes(pulse);
         setShowPulse(true);
     } catch (err) {
-        alert("Error");
+        showAlert("Error","error");
     }
   };
 
@@ -704,28 +751,46 @@ function Projects() {
                           </div>
                         </>
                       )}{' '}
-                      <button className="delete-project-btn"
-                        onClick={() => setShowTeamBox(true)}>
-                        Add Member
-                      </button>{showTeamBox &&(
-                        <>
+                      <button className="delete-project-btn" onClick={() => setShowTeamBox(true)}>
+                        Edit Member
+                      </button>
+                      {showTeamBox && (
                         <div className="modal-overlay" onClick={() => setShowTeamBox(false)}>
-                            <div className="team-modal" onClick={(e) => e.stopPropagation()}>
+                          <div className="team-modal" onClick={(e) => e.stopPropagation()}>
+                            <div className="modal-header">
+                              <h3>Manage Team Members</h3>
+                              <span className="close-icon" onClick={() => setShowTeamBox(false)}> ✕ </span>
+                            </div>
 
-                              <div className="modal-header">
-                                <h3>Add Team Member</h3>
-                                <span className="close-icon" onClick={() => setShowTeamBox(false)}> ✕ </span>
-                              </div>
-                              <textarea
-                                placeholder="Enter Team Member's Email"
-                                className="project-description"
-                                value={memberEmail}
-                                onChange={(e) => setMemberEmail(e.target.value)}
-                              />
-                              <button className="delete-project-btn" onClick={addMemberToProject}>Add Member</button>
+                            <div className="team-member-list">
+                              <h4>Current Members</h4>
+
+                              {selectedProject.members?.length > 0 ? (
+                                selectedProject.members.map((email: string) => (
+                                  <div className="team-member-row" key={email}>
+                                    <span className="team-member-email">
+                                      {email}
+                                    </span>
+
+                                    <button className="remove-member-btn" onClick={() => removeMemberFromProject(email)}>
+                                      Remove
+                                    </button>
+                                  </div>
+                                ))
+                              ) : (
+                                <p className="no-team-members"> No members added yet. </p>
+                              )}
+                            </div>
+
+                            <div className="add-team-member">
+                              <h4>Add a new member</h4>
+                              <input type="email" placeholder="Enter team member's email" className="project-description" value={memberEmail} onChange={(e) => setMemberEmail(e.target.value)}/>
+                              <button className="delete-project-btn" onClick={addMemberToProject}>
+                                Add Member
+                              </button>
                             </div>
                           </div>
-                        </>
+                        </div>
                       )}
                     </div>
                     </div>

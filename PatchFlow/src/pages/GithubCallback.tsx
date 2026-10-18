@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import { useAlert } from "../components/Alert";
 
 function GithubCallback() {
   const navigate = useNavigate();
+  const {showAlert} = useAlert();
 
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
@@ -15,7 +17,7 @@ function GithubCallback() {
       auth,
       async (user) => {
         if (!user) {
-          console.log("Waiting for Firebase user...");
+          showAlert(`Please re-login again`,"info");
           return;
         }
 
@@ -35,9 +37,7 @@ function GithubCallback() {
           );
 
           if (!response.ok) {
-            const errorText = await response.text();
-
-            console.error(errorText);
+            showAlert(`Unable to fetch token please re-login again`,"error");
             return;
           }
 
@@ -45,7 +45,7 @@ function GithubCallback() {
 
           navigate("/github");
         } catch (error) {
-          console.error(error);
+          showAlert(`Please refresh and re-login again`,"error");
         }
       }
     );

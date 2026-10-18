@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Sidebar from "./Sidebar.tsx";
 import { auth, db } from "../firebase";
 import { doc, updateDoc, collection, query, where, onSnapshot,} from "firebase/firestore";
-
+import { useAlert } from "../components/Alert";
 import "./Issues.css";
 import "./Projects.css";
 import "./Teams.css";
@@ -33,6 +33,7 @@ function Teams() {
   const [showStatus, setShowStatus] = useState(false);
   const [pulseLoading, setPulseLoading] = useState(false);
   const [pulse, setPulse] = useState("");
+  const {showAlert} = useAlert();
 
 
   const statusIcons: Record<string, string> = {
@@ -133,8 +134,6 @@ function Teams() {
                 changedAt: new Date().toISOString()
             };
 
-            console.log(activity);
-
             await fetch(
                 `${import.meta.env.VITE_BACKEND_BASE_URL}/api/activity`,
                 {
@@ -153,7 +152,7 @@ function Teams() {
 
             setSelectedIssue({...selectedIssue, status,});
         } catch (error) {
-            console.error(error);
+            showAlert(`Failed to update issue status`,"error");
         }
     };
 
@@ -192,7 +191,7 @@ function Teams() {
             setPulse(newPulse);
 
         } catch (err) {
-            console.error(err);
+            showAlert(`Failed to generate pulse report`,"error");
             setPulse("");
         } finally {
             setPulseLoading(false);

@@ -69,7 +69,7 @@ public class Controller {
         JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
 
         if (!jsonResponse.has("candidates")) {
-            return "API Error: " + jsonResponse;
+            return "Error in communication with server";
         }
         JsonArray candidates = jsonResponse.getAsJsonArray("candidates");
         return candidates.get(0).getAsJsonObject()
@@ -97,8 +97,7 @@ public class Controller {
                 return sendPromptTwoFlash(prompt);
 
             } catch (Exception e) {
-                e.printStackTrace();
-                return "Error: " + e.getMessage();
+                return "Error in sending telemetry";
             }
     }
 
@@ -130,7 +129,6 @@ public class Controller {
             2.
             3.
             4.
-            5.
 
             RISKS:
             -
@@ -149,20 +147,14 @@ public class Controller {
             return azureFunctionService.sendPrompt(prompt);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
+            return "Error in sending project telemetry";
         }
     }
 
 
     @PostMapping("/api/pulse")
     public String getPulse(@RequestBody PulseRequest request) throws Exception {
-
-        return azureFunctionService.getProjectPulse(
-                request.getProjectId(),
-                request.getProjectName(),
-                request.getDescription()
-        );
+        return azureFunctionService.getProjectPulse(request.getProjectId(), request.getProjectName(), request.getDescription());
     }
 
 

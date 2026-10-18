@@ -3,12 +3,13 @@ import patch from "./assets/patchflow.ico";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
-
+import { useAlert } from "../components/Alert";
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../firebase";
 
 function Login() {
   const navigate = useNavigate();
+  const {showAlert} = useAlert();
 
   const googleSignIn = async () => {
     try {
@@ -25,7 +26,7 @@ function Login() {
       );
       navigate("/issues");
     } catch (error) {
-      console.error(error);
+      showAlert(`Failed to Login please try again`,"error");
     }
   };
 

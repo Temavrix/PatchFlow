@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { useEffect, useState } from "react";
+import { AlertProvider } from "./components/Alert";
+import { ConfirmDialogProvider } from "./components/ConfirmDialog";
 
 import Login from "./pages/Login";
 import Issues from "./pages/Issues";
@@ -28,16 +30,20 @@ function App() {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <Routes>
-      <Route path="/" element={user ? <Navigate to="/issues" /> : <Login />}/>
-      <Route path="/board" element={ user ? <Board /> : <Navigate to="/" />}/>
-      <Route path="/issues" element={user ? <Issues /> : <Navigate to="/" />}/>
-      <Route path="/projects" element={ user ? <Projects /> : <Navigate to="/" />}/>
-      <Route path="/calander" element={ user ? <Calander /> : <Navigate to="/" />}/>
-      <Route path="/teams" element={ user ? <Teams /> : <Navigate to="/" />}/>
-      <Route path="/github" element={ user ? <Githubpage /> : <Navigate to="/" />}/>
-      <Route path="/github/callback" element={<GithubCallback />} />
-    </Routes>
+    <AlertProvider>
+      <ConfirmDialogProvider>
+        <Routes>
+          <Route path="/" element={user ? <Navigate to="/issues" /> : <Login />}/>
+          <Route path="/board" element={ user ? <Board /> : <Navigate to="/" />}/>
+          <Route path="/issues" element={user ? <Issues /> : <Navigate to="/" />}/>
+          <Route path="/projects" element={ user ? <Projects /> : <Navigate to="/" />}/>
+          <Route path="/calander" element={ user ? <Calander /> : <Navigate to="/" />}/>
+          <Route path="/teams" element={ user ? <Teams /> : <Navigate to="/" />}/>
+          <Route path="/github" element={ user ? <Githubpage /> : <Navigate to="/" />}/>
+          <Route path="/github/callback" element={<GithubCallback />} />
+        </Routes>
+      </ConfirmDialogProvider>
+    </AlertProvider>
   );
 }
 
