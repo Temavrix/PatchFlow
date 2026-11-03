@@ -1,0 +1,8 @@
+# Build command and publish directory are configured in the Netlify UI.
+
+[build.environment]
+    # These VITE_* variables are intentionally inlined into the client bundle by Vite.
+    # They are public-by-design values (Firebase web config, GitHub OAuth client ID,
+    # backend URL), so they must not trigger secrets scanning on the build output.
+    # Never put real server-side secrets (client secrets, private keys) in VITE_* vars.
+    SECRETS_SCAN_OMIT_KEYS = "VITE_API_KEY,VITE_AUTH_DOMAIN,VITE_PROJECT_ID,VITE_STORAGE_BUCKET,VITE_MESSAGING_SENDER_ID,VITE_APP_ID,VITE_GITHUB_CLIENT_ID,VITE_BACKEND_BASE_URL,VITE_API_BASE_URL"
