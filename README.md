@@ -1,7 +1,6 @@
 # PatchFlow <img height="20" alt="Image" src="https://github.com/user-attachments/assets/f23b203a-9e13-432f-906c-29c0c70e5d56"/>
 
-## Our Project is now [live](https://patchflowai.netlify.app/) current Status : [![Netlify Status](https://api.netlify.com/api/v1/badges/3364289d-d800-4af9-a8b3-a8a4e8f42c4d/deploy-status)](https://app.netlify.com/projects/patchflowai/deploys)
-
+## Our Project is now [live](https://patchflows.netlify.app/) current Status : [![Netlify Status](https://api.netlify.com/api/v1/badges/44b0c55c-3f1e-4526-9174-ed08ebc2c708/deploy-status)](https://app.netlify.com/projects/patchflows/deploys)
 ###### An AI Bug tracker for an easier workflow for developers  
 
 
@@ -158,7 +157,7 @@ Please also refer to LICENSE file for clarifications.
 Thank you for your kind co-operation :-)
 
 
-NexaView Copyright (C) Temavrix 2026  
+PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
 Version 2.0
