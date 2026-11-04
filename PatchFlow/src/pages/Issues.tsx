@@ -14,16 +14,12 @@ import BacklogIcon from "./assets/Backlog.png";
 import OnTrackIcon from "./assets/Ontrack.png";
 import AtRiskIcon from "./assets/Atrisk.png";
 import OffTrackIcon from "./assets/Offtrack.png";
-
 import issueone from "./assets/Issues.png";
-import user from "./assets/User.png";
-
 import pTodoIcon from "./assets/pTodo.png";
 import pInProgressIcon from "./assets/pInProgress.png";
 import pCodeReviewIcon from "./assets/pCodeReview.png";
 import pBacklogIcon from "./assets/pBacklog.png";
 import Projectsb from "./assets/Projectsb.png";
-
 import Nopriority from "./assets/Nopriority.png";
 import Low from "./assets/Low.png";
 import Medium from "./assets/Medium.png";
@@ -34,7 +30,6 @@ function Issues() {
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  
   const [status, setStatus] = useState("Todo");
   const [priority, setPriority] = useState("No Priority");
   const [dueDate, setDueDate] = useState("");
@@ -343,6 +338,10 @@ function Issues() {
             )}
           </div>
 
+          <span className="project-name-cell">
+            {issue.projectName.slice(0, 3).toUpperCase()}-{issue.id.slice(0, 3)}
+          </span>
+
           <div className="status-container" onClick={(e) => {e.stopPropagation(); setStatusDropdownIssue(statusDropdownIssue === issue.id ? null : issue.id);}}>
             <img src={statusIcons[issue.status]} alt={issue.status} className="status-icon"/>
             {statusDropdownIssue === issue.id && (
@@ -466,13 +465,8 @@ function Issues() {
                   )}
                 </div>
 
-              {/* Due Date */}
-                <input
-                  type="date"
-                  className="option-btn"
-                  value={dueDate}
-                  onChange={(e) => setDueDate(e.target.value)}
-                />
+                {/* Due Date */}
+                <input type="date" className="option-btn" value={dueDate} onChange={(e) => setDueDate(e.target.value)}/>
               </div>
 
               <textarea placeholder="Add description..." className="issue-description" value={description} onChange={(e) => setDescription(e.target.value)}/>
@@ -498,9 +492,10 @@ function Issues() {
             return (
               <div key={statusName} className="status-group">
                 <div className="greydiv">
-                  <h2> <img src={statusIcons[statusName]} alt={statusName} className="status-dropdown-icon"/> {statusName} - {statusIssues.length}</h2>
-
-                  <span className="add-icon" onClick={() => setShowModal(true)}>+</span>
+                  <div className="issue-board-text">
+                    <h3><img src={statusIcons[statusName]} className="status-dropdown-icon"/>{statusName}</h3>
+                    <h4>{statusIssues.length}</h4>
+                  </div>
                 </div>
                 {statusIssues.map(renderIssueCard)}
               </div>
@@ -585,7 +580,7 @@ function Issues() {
 
                   <div className="details-section">
                     <h4>Created By</h4>
-                    <p><img src={user}className="status-icon"/>{selectedIssue.userName}</p>
+                    <p><img src={auth.currentUser?.photoURL || "/default-avatar.png"} className="profile-pic"/>{"  "}{selectedIssue.userName}</p>
                   </div>
 
                   <div className="details-section">
@@ -601,14 +596,8 @@ function Issues() {
                   <div className="details-section">
                     <h4>Due Date</h4>
 
-                    <input
-                      className="option-btn "
-                      type="date"
-                      value={selectedIssue.dueDate || ""}
-                      onChange={(e) => setSelectedIssue({
-                          ...selectedIssue,
-                          dueDate: e.target.value,
-                      })}
+                    <input className="option-btn " type="date" value={selectedIssue.dueDate || ""}
+                      onChange={(e) => setSelectedIssue({...selectedIssue, dueDate: e.target.value,})}
                       onBlur={() => updateIssueField(selectedIssue.id, "dueDate", selectedIssue.dueDate)}
                     />
                   </div>

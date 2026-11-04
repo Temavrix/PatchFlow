@@ -2,12 +2,6 @@
   display: flex;
 }
 
-.greydiv {
-  background-color: rgb(37, 37, 37);
-  padding: 0.4rem;
-  color: white;
-}
-
 .modal-overlay {
   position: fixed;
   inset: 0;

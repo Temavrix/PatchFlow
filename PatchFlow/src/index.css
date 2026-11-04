@@ -8,10 +8,26 @@
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
+
+  /* Backgrounds */
+  --bg-primary: #121213;
+  --bg-secondary: #1A1A1C;
+  --bg-hover: #222224;
+
+  /* Text */
+  --text-primary: #E3E4E6;
+  --text-secondary: #959597;
+  --text-muted: #626366;
+  --text-disabled: #55565A;
+
+  /* Borders */
+  --border-subtle: #29292B;
+
+  /* Accent */
+  --accent-primary: #7C83FF;
 
   font: 18px/145% var(--sans);
   font-size: smaller;
@@ -103,4 +119,3 @@ h2 {
 p {
   margin: 0;
 }
-

@@ -10,7 +10,6 @@ import Projectsb from "./assets/Projectsb.png";
 import user from "./assets/User.png";
 import Github from "./assets/Githubb.png";
 import Roadmap from "./assets/Roadmap.png";
-import Support from "./assets/Support.png";
 
 
 function Sidebar() {
@@ -43,7 +42,7 @@ function Sidebar() {
             <li><Link to="/teams"><img src={user} className="status-icon-side"/>Teams</Link></li>
             <li><Link to="/github"><img src={Github} className="status-icon-side"/>Github</Link></li>
             <br/>
-            <li><a href="https://buymeacoffee.com/mahadhevha" target="_blank" rel="noopener noreferrer"><img src={Support} className="status-icon-side"/>Support Us</a></li>
+            <li><a href="https://buymeacoffee.com/mahadhevha" target="_blank" rel="noopener noreferrer">Support Us</a></li>
             <li onClick={handleLogout}>Logout</li>
           </ul>
         </nav>

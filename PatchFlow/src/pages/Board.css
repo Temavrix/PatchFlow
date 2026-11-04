@@ -1,4 +1,4 @@
-.content-board {
+.board-page{
   margin-left: 200px;
   width: calc(100% - 200px);
   padding: 20px;
@@ -23,7 +23,7 @@
 }
 
 @media (max-width: 768px) {
-  .content-board {
+  .board-page {
     margin-left: 0;
     width: 100%;
     padding-top: 70px; /* sidebar hamburger space */
@@ -51,6 +51,9 @@
 }
 
 .issue-board-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   background: rgba(27, 27, 28);
   border-radius: 12px;
   padding: 12px;
@@ -65,17 +68,28 @@
   transform: translateY(-2px);
 }
 
+.issue-board-num{
+  display: block;
+  color: #959597;
+}
+
 .issue-board-title {
   font-size: 15px;
   font-weight: 600;
-  margin-bottom: 8px;
 }
 
 .issue-board-project {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-bottom: 10px;
+}
+
+.issue-board-project h3,
+.issue-board-project h4 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .project-link-btn {

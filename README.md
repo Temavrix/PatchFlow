@@ -36,8 +36,7 @@ PatchFlow Changelogs:-
 
 ANNOUNCEMENT:- 
 
-1. Added In-page Success, Error and Info messages
-2. UI improvements
+1. General UI and UX Improvements
 
 Code Checks Manifest:-
 All Checks Status: ✅
@@ -46,7 +45,7 @@ UX (User Experience) Checks: ✅
 BackEnd Code-FrontEnd UI Integration Checks: ✅
 (All evaluations are done by the R&D Department)
 
-Last Updated: 18-Oct-2026 12:17 HRS (Singapore Standard Time)
+Last Updated: 04-Nov-2026 15:50 HRS (Singapore Standard Time)
 Publisher: Temavrix
 ```
 Keep up-to-date with what's happening on this repository by clicking the 'Star' and 'Watch' button on the top right corner of this repository.
@@ -147,6 +146,13 @@ Once imported, GitHub issues can be managed alongside native PatchFlow tasks thr
 This seamless integration improves collaboration between project managers and developers, provides better visibility into project status, and helps ensure that development activities remain synchronized throughout the software lifecycle.
 
 
+## Support Us
+Please consider donating some money to our organization to help fund this project:  
+<a href="https://buymeacoffee.com/mahadhevha" target="_blank">
+    <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" height="30"/>
+</a>
+
+
 ## License
 IMPORTANT NOTE: Any User who are willing to Share or Re-Distribute PatchFlow are kindly advised to:
 
@@ -160,4 +166,4 @@ Thank you for your kind co-operation :-)
 PatchFlow Copyright (C) Temavrix 2026  
 All Rights Reserved
 
-Version 2.0
+Version 2.1

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Sidebar from "./Sidebar";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase";
@@ -56,11 +56,10 @@ interface RoadmapProject extends Omit<ProjectGroup, "issues"> {
   issues: RoadmapIssue[];
 }
 
-interface MonthBlock {
-  key: string;
-  name: string;
-  weeks: number[];
-}
+const DAY_MS = 24 * 60 * 60 * 1000;
+const PX_PER_DAY = 22;
+const SIDE_PADDING = 60;
+const MIN_TIMELINE_WIDTH = 1200;
 
 const startOfDay = (date: Date) => {
   const nextDate = new Date(date);
@@ -90,29 +89,18 @@ const toDate = (value: any): Date | null => {
   return null;
 };
 
-const formatMonthDay = (date: Date) =>
-  date.toLocaleString("en-US", { month: "short", day: "numeric" }).toUpperCase();
-
-const formatMonth = (date: Date) =>
-  date.toLocaleString("en-US", { month: "short" }).toUpperCase();
-
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
-
+const formatMonthDay = (date: Date) => date.toLocaleString("en-US", { month: "short", day: "numeric" }).toUpperCase();
+const formatMonth = (date: Date) => date.toLocaleString("en-US", { month: "short" }).toUpperCase();
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 const getPosition = (date: Date, timelineStart: Date, timelineEnd: Date) => {
   const range = timelineEnd.getTime() - timelineStart.getTime();
   if (range <= 0) return 0;
   return clamp(((date.getTime() - timelineStart.getTime()) / range) * 100, 0, 100);
 };
+const getIssueDate = (issue: Issue) => toDate(issue.dueDate);
+const hasDateValue = (issue: Issue & { dateValue: Date | null }): issue is RoadmapIssue => issue.dateValue instanceof Date;
 
-const getIssueDate = (issue: Issue) =>
-  toDate(issue.dueDate);
-
-const hasDateValue = (issue: Issue & { dateValue: Date | null }): issue is RoadmapIssue =>
-  issue.dateValue instanceof Date;
-
-const getPriorityClass = (priority?: string) =>
-  (priority || "No Priority").toLowerCase().replace(/\s+/g, "-");
+const getPriorityClass = (priority?: string) => (priority || "No Priority").toLowerCase().replace(/\s+/g, "-");
 
 const statusIcons: Record<string, string> = {
   "Todo": TodoIcon,
@@ -197,7 +185,7 @@ function Calander() {
       return earliest;
     }, null);
 
-    const defaultStart = startOfMonth(addMonths(today, -0));
+    const defaultStart = startOfMonth(addMonths(today, -1));
     if (earliestIssueDate && earliestIssueDate.getTime() < defaultStart.getTime()) {
       return startOfMonth(earliestIssueDate);
     }
@@ -212,7 +200,7 @@ function Calander() {
       return latest;
     }, null);
 
-    const defaultEnd = endOfMonth(addMonths(today, 0));
+    const defaultEnd = endOfMonth(addMonths(today, 3));
     if (latestIssueDate && latestIssueDate.getTime() > defaultEnd.getTime()) {
       return endOfMonth(latestIssueDate);
     }
@@ -220,40 +208,28 @@ function Calander() {
     return defaultEnd;
   }, [datedIssues, today]);
 
-  const months = useMemo<MonthBlock[]>(() => {
-    const blocks: MonthBlock[] = [];
-    const currentDate = new Date(timelineStart);
-
-    while (currentDate <= timelineEnd) {
-      const daysInMonth = endOfMonth(currentDate).getDate();
-      const weeks: number[] = [];
-
-      for (let day = 1; day <= daysInMonth; day += 7) {
-        weeks.push(day);
-      }
-
-      blocks.push({
-        key: `${currentDate.getFullYear()}-${currentDate.getMonth()}`,
-        name: formatMonth(currentDate),
-        weeks,
-      });
-
-      currentDate.setMonth(currentDate.getMonth() + 1);
-    }
-
-    return blocks;
+  const timelineWidth = useMemo(() => {
+    const days = (timelineEnd.getTime() - timelineStart.getTime()) / DAY_MS;
+    return Math.max(MIN_TIMELINE_WIDTH, Math.round(days * PX_PER_DAY) + SIDE_PADDING * 2);
   }, [timelineEnd, timelineStart]);
 
-  const gridLines = useMemo(() => {
-    const lines: Date[] = [];
-    const currentDate = new Date(timelineStart);
+  // One tick per Monday, so the numbers in the header sit at their real dates.
+  const weekTicks = useMemo(() => {
+    const ticks: { date: Date; showMonth: boolean }[] = [];
+    const currentDate = startOfDay(timelineStart);
+    currentDate.setDate(currentDate.getDate() + ((8 - currentDate.getDay()) % 7));
 
+    let previousMonth = -1;
     while (currentDate <= timelineEnd) {
-      lines.push(new Date(currentDate));
+      ticks.push({
+        date: new Date(currentDate),
+        showMonth: currentDate.getMonth() !== previousMonth,
+      });
+      previousMonth = currentDate.getMonth();
       currentDate.setDate(currentDate.getDate() + 7);
     }
 
-    return lines;
+    return ticks;
   }, [timelineEnd, timelineStart]);
 
   const roadmapProjects = useMemo<RoadmapProject[]>(() => {
@@ -306,39 +282,52 @@ function Calander() {
 
   const todayPosition = getPosition(today, timelineStart, timelineEnd);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const hasScrolledToToday = useRef(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || hasScrolledToToday.current) return;
+
+    const todayX = SIDE_PADDING + (todayPosition / 100) * (timelineWidth - SIDE_PADDING * 2);
+    container.scrollLeft = Math.max(0, todayX - container.clientWidth * 0.35);
+    hasScrolledToToday.current = true;
+  }, [timelineWidth, todayPosition]);
+
   return (
     <div className="layout">
       <Sidebar />
 
       <main className="content-board">
-        <div className="roadmap-container">
-          <div className="timeline-content">
-            <div className="timeline-grid">
-              {gridLines.map((lineDate) => (
-                <div
-                  key={lineDate.toISOString()}
-                  className="grid-line"
-                  style={{left: `${getPosition(lineDate, timelineStart, timelineEnd)}%`,}}/>
-              ))}
-            </div>
+        <div className="roadmap-container" ref={containerRef}>
+          <div className="timeline-content" style={{ width: `${timelineWidth}px` }}>
+            <div className="timeline-body">
+              <div className="timeline-grid">
+                {weekTicks.map((tick) => (
+                  <div key={tick.date.toISOString()} className="grid-line" style={{ left: `${getPosition(tick.date, timelineStart, timelineEnd)}%` }}/>
+                ))}
+              </div>
 
-            <div className="today-line" style={{left: `${todayPosition}%`,}}>
-              <span>{formatMonthDay(today)}</span>
-            </div>
+              <div className="today-line" style={{ left: `${todayPosition}%` }} />
 
-            <div className="timeline-header">
-              {months.map((month) => (
-                <div key={month.key} className="month-block">
-                  <div className="month-name">{month.name}</div>
+              <div className="timeline-header">
+                {weekTicks.map((tick) => {
+                  const nearToday = Math.abs(tick.date.getTime() - today.getTime()) < 3 * DAY_MS;
 
-                  <div className="weeks-row">
-                    {month.weeks.map((week) => (
-                      <span key={week}>{week}</span>
-                    ))}
-                  </div>
+                  return (
+                    <div key={tick.date.toISOString()} className="tick" style={{ left: `${getPosition(tick.date, timelineStart, timelineEnd)}%` }}>
+                      {tick.showMonth && (
+                        <span className="tick-month">{formatMonth(tick.date)}</span>
+                      )}
+                      {!nearToday && <span className="tick-day">{tick.date.getDate()}</span>}
+                    </div>
+                  );
+                })}
+
+                <div className="today-pill" style={{ left: `${todayPosition}%` }}>
+                  {formatMonthDay(today)}
                 </div>
-              ))}
-            </div>
+              </div>
 
             {roadmapProjects.length === 0 && (
               <div className="empty-roadmap">
@@ -349,8 +338,12 @@ function Calander() {
             {roadmapProjects.map((project) => {
               const firstIssueDate = project.issues[0].dateValue!;
               const lastIssueDate = project.issues[project.issues.length - 1].dateValue!;
-              const barLeft = getPosition(firstIssueDate, timelineStart, timelineEnd);
-              const barRight = getPosition(lastIssueDate, timelineStart, timelineEnd);
+              const projectStart = toDate(project.startDate);
+              const projectEnd = toDate(project.endDate);
+              const barStartDate = projectStart && projectStart < firstIssueDate ? projectStart : firstIssueDate;
+              const barEndDate = projectEnd && projectEnd > lastIssueDate ? projectEnd : lastIssueDate;
+              const barLeft = getPosition(barStartDate, timelineStart, timelineEnd);
+              const barRight = getPosition(barEndDate, timelineStart, timelineEnd);
               const barWidth = Math.max(.8, barRight - barLeft);
               const status = project.status || "Backlog";
               const healthStatus = project.healthStatus || "On Track";
@@ -367,20 +360,14 @@ function Calander() {
                       </div>
                     </div>
 
-                    <div
-                      className="project-bar"
-                      style={{ left: `${barLeft}%`, width: `${barWidth}%`,}}
-                    />
+                    <div className="project-bar" style={{ left: `${barLeft}%`, width: `${barWidth}%`,}}/>
 
                     {project.issues.map((issue) => {
                       const issueDate = issue.dateValue!;
                       const issuePosition = getPosition(issueDate, timelineStart, timelineEnd);
 
                       return (
-                        <div key={issue.id} className={`milestone-wrapper priority-${getPriorityClass(issue.priority)}`}
-                          style={{ left: `${issuePosition}%`, }}
-                          title={`${issue.title} - ${formatMonthDay(issueDate)}`}
-                        >
+                        <div key={issue.id} className={`milestone-wrapper priority-${getPriorityClass(issue.priority)} ${issueDate < today ? "is-past" : "is-upcoming"}`} style={{ left: `${issuePosition}%`, }}>
                           <div className="issue-dot" />
 
                           <div className="issue-label">
@@ -394,6 +381,7 @@ function Calander() {
                 </section>
               );
             })}
+            </div>
           </div>
         </div>
       </main>

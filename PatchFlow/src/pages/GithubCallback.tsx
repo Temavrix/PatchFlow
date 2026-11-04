@@ -53,7 +53,13 @@ function GithubCallback() {
     return () => unsubscribe();
   }, [navigate]);
 
-  return <h2>Connecting to GitHub...</h2>;
+  return(
+    <>
+      <section style={{display: 'grid', justifyContent: 'center', alignItems: 'center', height: '100vh', fontWeight: 'bold'}}>
+        <h3>Fetching Issues from GitHub... Please hang tight...</h3>
+      </section>
+    </>
+  )
 }
 
 export default GithubCallback;

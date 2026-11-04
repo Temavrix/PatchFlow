@@ -27,7 +27,13 @@ function App() {
     return unsubscribe;
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return(
+    <>
+      <section style={{display: 'grid', justifyContent: 'center', alignItems: 'center', height: '100vh', fontWeight: 'bold'}}>
+        <h3>Setting up your PatchFlow Workspace....</h3>
+      </section>
+    </>
+  )
 
   return (
     <AlertProvider>

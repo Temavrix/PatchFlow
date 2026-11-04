@@ -9,15 +9,8 @@
   padding: 3em 5px 5px 5px; /* Push content down */
 }
 
-.sidebar li {
-  padding: 3px;
-  margin-bottom: 1px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
 .sidebar a {
-  color: rgb(216, 216, 216);
+  color: #959597;
   text-decoration: none;
   display: block; /* Makes the whole area clickable */
 }
@@ -28,8 +21,16 @@
   display: block; /* Makes the whole area clickable */
 }
 
+.sidebar li {
+  color: #959597;
+  padding: 3px;
+  margin-bottom: 1px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 .sidebar li:hover {
-  background-color: #393939;
+  color: rgb(255, 255, 255);
 }
 
 .sidebar ul {

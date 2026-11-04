@@ -525,21 +525,21 @@ function Projects() {
                 <div key={project.id} className="project-row"
                   onClick={() => {setSelectedProject(project); setShowProjectSidebar(true);}}>
 
-                  <div className="project-name-cell">
+                  <div className="issue-name">
                     {project.projectName}
                   </div>
 
                   <div>
-                    <img src={ projectHealthIcons[
-                          project.healthStatus || "On Track"
-                        ]} className="health-icon"/>
+                    <img src={ projectHealthIcons[project.healthStatus || "On Track"]} className="health-icon"/>
                   </div>
 
                   <div>
                     <img src={priorityIcons[project.priority]} alt={project.priority} className="priority-icon"/>
                   </div>
 
-                  <div> {stats.total} </div>
+                  <div className="issue-name"> 
+                    {stats.total} 
+                  </div>
 
                   <div className="status-cell">
                     <img src={statusIcons[project.status]} alt="" className="status-dropdown-icon"/>
