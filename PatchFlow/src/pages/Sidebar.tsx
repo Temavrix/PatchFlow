@@ -10,6 +10,7 @@ import Projectsb from "./assets/Projectsb.png";
 import user from "./assets/User.png";
 import Github from "./assets/Githubb.png";
 import Roadmap from "./assets/Roadmap.png";
+import patchicon from "./assets/patchicon.png";
 
 
 function Sidebar() {
@@ -31,6 +32,7 @@ function Sidebar() {
 
       <aside className={`sidebar ${isOpen ? "open" : ""}`}>
         <nav>
+          <h2><img src={patchicon} alt="PatchFlow" width="19" height="19" /> PatchFlow</h2><br/>
           <ul>
             My Workspace ▾
             <li><Link to="/board"><img src={Boardb} className="status-icon-side"/>Board</Link></li>

@@ -21,30 +21,33 @@
 .roadmap-container {
   width: 100%;
   min-height: 100vh;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: auto;
   background: var(--rm-bg);
   color: var(--rm-text);
 }
 
 .timeline-content {
   position: relative;
+  min-width: 1200px;
+  width: max-content;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  padding: 40px 0 0;
 }
 
-/* Everything positioned by % lives in here so it lines up with the grid */
 .timeline-body {
   position: relative;
-  flex: 1;              /* stretch to the bottom of the page so the lines do too */
-  margin: 0 60px;
-  padding-bottom: 90px;
+  flex: 1;
+  min-height: calc(100vh - 160px);
+  margin: 0 28px;
+  padding-bottom: 60px;
 }
 
 .timeline-grid {
   position: absolute;
   inset: 0;
+  height: 100%;
   pointer-events: none;
 }
 
@@ -52,16 +55,16 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  border-left: 1px dashed rgba(255, 255, 255, .07);
+  border-left: 1px dashed rgba(255, 255, 255, .09);
 }
 
 /* ---------- Header: month + week-start dates ---------- */
 .timeline-header {
   position: relative;
   z-index: 2;
-  height: 48px;
-  margin-bottom: 56px;
-  border-bottom: 1px solid var(--rm-border);
+  height: 58px;
+  margin-bottom: 45px;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
 }
 
 .tick {
@@ -81,37 +84,38 @@
 
 .tick-month {
   top: 0;
-  color: var(--rm-text-muted);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .8px;
+  color: rgba(255, 255, 255, .72);
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .tick-day {
-  top: 22px;
-  color: var(--rm-text-faint);
-  font-size: 11px;
-  font-weight: 500;
+  top: 31px;
+  color: rgba(255, 255, 255, .45);
+  font-size: 12px;
+  font-weight: 400;
 }
 
 /* ---------- Today marker ---------- */
 .today-line {
   position: absolute;
-  top: 44px;
+  top: 48px;
   bottom: 0;
   width: 1px;
   background: var(--rm-accent);
-  opacity: .7;
+  opacity: .8;
   z-index: 5;
   pointer-events: none;
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px var(--rm-accent);
 }
 
 .today-pill {
   position: absolute;
-  top: 19px;
+  top: 27px;
   z-index: 6;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 2px 7px;
+  border-radius: 5px;
   background: var(--rm-accent);
   color: #fff;
   font-size: 11px;
@@ -119,18 +123,19 @@
   line-height: 16px;
   white-space: nowrap;
   transform: translateX(-50%);
+  box-shadow: 0 0 12px rgba(94, 106, 210, .4);
 }
 
 /* ---------- Project rows ---------- */
 .project-section {
   position: relative;
   z-index: 2;
-  margin-bottom: 52px;
+  margin-bottom: 85px;
 }
 
 .project-track {
   position: relative;
-  height: 96px;
+  min-height: 115px;
 }
 
 .project-title {
@@ -142,10 +147,17 @@
   gap: 8px;
   max-width: 320px;
   color: rgba(255, 255, 255, .92);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   line-height: 1;
   white-space: nowrap;
+}
+
+.project-icons img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, .2));
 }
 
 .project-title > span {
@@ -169,38 +181,29 @@
 
 .project-bar {
   position: absolute;
-  top: 24px;
-  height: 28px;
-  border: 1px solid rgba(255, 255, 255, .08);
+  top: 28px;
+  height: 29px;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, .10);
   border-radius: 6px;
-  background: linear-gradient(
-    180deg,
-    rgba(42, 42, 42, .98),
-    rgba(28, 28, 28, .98)
-  );
+  background: linear-gradient(180deg, #292929, #222222);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .06),
-    0 8px 18px rgba(0, 0, 0, .25);
-  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+    inset 0 1px 0 rgba(255, 255, 255, .035),
+    0 4px 12px rgba(0, 0, 0, .18);
 }
 
 .project-track:hover .project-bar {
-  border-color: rgba(255, 255, 255, .18);
+  border-color: rgba(255, 255, 255, .2);
   background: linear-gradient(
     180deg,
     #303030,
-    #222222
+    #262626
   );
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, .08),
-    0 8px 22px rgba(0, 0, 0, .35);
 }
 
 /* ---------- Milestones (diamonds) ---------- */
 .milestone-wrapper {
-  --dot-color: var(--rm-accent);   /* default / "No Priority" */
   position: absolute;
-  top: 32px;
   z-index: 3;
   transform: translateX(-50%);
 }
@@ -218,72 +221,69 @@
 }
 
 .issue-dot {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
+  box-sizing: border-box;
   border: 1.5px solid var(--dot-color);
   background: transparent;
-  box-shadow: 0 0 12px var(--dot-color);
   transform: rotate(45deg);
-  transition: transform .18s ease, box-shadow .18s ease;
 }
 
 /* Due date already passed: filled */
 .milestone-wrapper.is-past .issue-dot {
   background: var(--dot-color);
-  box-shadow: 0 0 14px var(--dot-color);
-}
-
-.milestone-wrapper:hover {
-  z-index: 20;
 }
 
 /* Hover effect */
 .milestone-wrapper:hover .issue-dot {
-  transform: rotate(45deg) scale(1.3);
-  box-shadow: 0 0 18px var(--dot-color);
+  transform: rotate(45deg) scale(1.35);
+  box-shadow: 0 0 10px var(--dot-color);
 }
 
 /* Title + date tooltip, only visible on hover */
 .issue-label {
   position: absolute;
-  top: 24px;
+  top: 42px;
   left: 50%;
+  z-index: 30;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-width: 90px;
-  max-width: 240px;
-  padding: 6px 10px;
-  border: 1px solid var(--rm-border);
+  gap: 4px;
+  min-width: 120px;
+  max-width: 200px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, .1);
   border-radius: 6px;
-  background: var(--rm-surface-hover);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, .4);
+  background: #232323;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .4);
   text-align: center;
-  white-space: nowrap;
+  white-space: normal;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transform: translate(-50%, 4px);
-  transition: opacity .15s ease, transform .15s ease;
+  transform: translate(-50%, 5px);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.milestone-wrapper:hover {
+  z-index: 40;
 }
 
 .milestone-wrapper:hover .issue-label {
   opacity: 1;
+  visibility: visible;
   transform: translate(-50%, 0);
 }
 
 .issue-label span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--rm-text);
-  font-size: 12px;
-  font-weight: 600;
+  color: #E3E4E6;
+  font-size: 11px;
+  font-weight: 500;
 }
 
 .issue-label small {
-  color: var(--rm-text-muted);
+  color: rgba(255, 255, 255, .45);
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .5px;
 }
 
 .empty-roadmap {
@@ -318,4 +318,17 @@
     width: 100%;
     padding-top: 70px; /* sidebar hamburger space */
   }
+}
+
+.milestone-code {
+  position: absolute;
+  top: 19px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  color: rgba(255, 255, 255, .45);
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
 }

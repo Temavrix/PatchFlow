@@ -57,7 +57,7 @@ interface RoadmapProject extends Omit<ProjectGroup, "issues"> {
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-const PX_PER_DAY = 22;
+const PX_PER_DAY = 50;
 const SIDE_PADDING = 60;
 const MIN_TIMELINE_WIDTH = 1200;
 
@@ -91,11 +91,12 @@ const toDate = (value: any): Date | null => {
 
 const formatMonthDay = (date: Date) => date.toLocaleString("en-US", { month: "short", day: "numeric" }).toUpperCase();
 const formatMonth = (date: Date) => date.toLocaleString("en-US", { month: "short" }).toUpperCase();
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
-const getPosition = (date: Date, timelineStart: Date, timelineEnd: Date) => {
-  const range = timelineEnd.getTime() - timelineStart.getTime();
-  if (range <= 0) return 0;
-  return clamp(((date.getTime() - timelineStart.getTime()) / range) * 100, 0, 100);
+const getPosition = (date: Date, timelineStart: Date) => {
+  const days =
+    (startOfDay(date).getTime() - startOfDay(timelineStart).getTime()) /
+    DAY_MS;
+
+  return SIDE_PADDING + days * PX_PER_DAY;
 };
 const getIssueDate = (issue: Issue) => toDate(issue.dueDate);
 const hasDateValue = (issue: Issue & { dateValue: Date | null }): issue is RoadmapIssue => issue.dateValue instanceof Date;
@@ -209,8 +210,14 @@ function Calander() {
   }, [datedIssues, today]);
 
   const timelineWidth = useMemo(() => {
-    const days = (timelineEnd.getTime() - timelineStart.getTime()) / DAY_MS;
-    return Math.max(MIN_TIMELINE_WIDTH, Math.round(days * PX_PER_DAY) + SIDE_PADDING * 2);
+    const days = Math.ceil(
+      (timelineEnd.getTime() - timelineStart.getTime()) / DAY_MS
+    );
+
+    return Math.max(
+      MIN_TIMELINE_WIDTH,
+      days * PX_PER_DAY + SIDE_PADDING * 2
+    );
   }, [timelineEnd, timelineStart]);
 
   // One tick per Monday, so the numbers in the header sit at their real dates.
@@ -280,8 +287,7 @@ function Calander() {
       .filter((project) => project.issues.length > 0);
   }, [issues, projects]);
 
-  const todayPosition = getPosition(today, timelineStart, timelineEnd);
-
+  const todayPosition = getPosition(today, timelineStart);
   const containerRef = useRef<HTMLDivElement>(null);
   const hasScrolledToToday = useRef(false);
 
@@ -289,7 +295,7 @@ function Calander() {
     const container = containerRef.current;
     if (!container || hasScrolledToToday.current) return;
 
-    const todayX = SIDE_PADDING + (todayPosition / 100) * (timelineWidth - SIDE_PADDING * 2);
+    const todayX = todayPosition;
     container.scrollLeft = Math.max(0, todayX - container.clientWidth * 0.35);
     hasScrolledToToday.current = true;
   }, [timelineWidth, todayPosition]);
@@ -304,18 +310,33 @@ function Calander() {
             <div className="timeline-body">
               <div className="timeline-grid">
                 {weekTicks.map((tick) => (
-                  <div key={tick.date.toISOString()} className="grid-line" style={{ left: `${getPosition(tick.date, timelineStart, timelineEnd)}%` }}/>
+                  <div
+                    key={tick.date.toISOString()}
+                    className="grid-line"
+                    style={{
+                      left: `${getPosition(tick.date, timelineStart)}px`
+                    }}
+                  />
                 ))}
               </div>
 
-              <div className="today-line" style={{ left: `${todayPosition}%` }} />
+              <div
+                className="today-line"
+                style={{ left: `${todayPosition}px` }}
+              />
 
               <div className="timeline-header">
                 {weekTicks.map((tick) => {
                   const nearToday = Math.abs(tick.date.getTime() - today.getTime()) < 3 * DAY_MS;
 
                   return (
-                    <div key={tick.date.toISOString()} className="tick" style={{ left: `${getPosition(tick.date, timelineStart, timelineEnd)}%` }}>
+                    <div
+                      key={tick.date.toISOString()}
+                      className="tick"
+                      style={{
+                        left: `${getPosition(tick.date, timelineStart)}px`
+                      }}
+                    >
                       {tick.showMonth && (
                         <span className="tick-month">{formatMonth(tick.date)}</span>
                       )}
@@ -324,7 +345,10 @@ function Calander() {
                   );
                 })}
 
-                <div className="today-pill" style={{ left: `${todayPosition}%` }}>
+                <div
+                  className="today-pill"
+                  style={{ left: `${todayPosition}px` }}
+                >
                   {formatMonthDay(today)}
                 </div>
               </div>
@@ -338,20 +362,46 @@ function Calander() {
             {roadmapProjects.map((project) => {
               const firstIssueDate = project.issues[0].dateValue!;
               const lastIssueDate = project.issues[project.issues.length - 1].dateValue!;
+
               const projectStart = toDate(project.startDate);
               const projectEnd = toDate(project.endDate);
-              const barStartDate = projectStart && projectStart < firstIssueDate ? projectStart : firstIssueDate;
-              const barEndDate = projectEnd && projectEnd > lastIssueDate ? projectEnd : lastIssueDate;
-              const barLeft = getPosition(barStartDate, timelineStart, timelineEnd);
-              const barRight = getPosition(barEndDate, timelineStart, timelineEnd);
-              const barWidth = Math.max(.8, barRight - barLeft);
+
+              const barStartDate =
+                projectStart && projectStart < firstIssueDate
+                  ? projectStart
+                  : firstIssueDate;
+
+              const barEndDate =
+                projectEnd && projectEnd > lastIssueDate
+                  ? projectEnd
+                  : lastIssueDate;
+
+              // Add a small inset so the first and last diamonds sit inside the bar.
+              const barLeft = getPosition(barStartDate, timelineStart) - 10;
+              const barRight = getPosition(barEndDate, timelineStart) + 10;
+              const barWidth = Math.max(20, barRight - barLeft);
+
+              // Keep all milestones on the same horizontal bar.
+              const issuesWithPositions = project.issues.map((issue) => ({
+                ...issue,
+                position: getPosition(issue.dateValue, timelineStart),
+              }));
+
               const status = project.status || "Backlog";
               const healthStatus = project.healthStatus || "On Track";
 
+              const trackHeight = 115;
+
               return (
                 <section key={project.id} className="project-section">
-                  <div className="project-track">
-                    <div className="project-title" style={{left: `${barLeft}%`}}>
+                  <div
+                    className="project-track"
+                    style={{ height: `${trackHeight}px` }}
+                  >
+                    <div
+                      className="project-title"
+                      style={{ left: `${barLeft}px` }}
+                    >
                       <span>{project.name}</span>
 
                       <div className="project-icons" aria-label="Project status">
@@ -360,23 +410,37 @@ function Calander() {
                       </div>
                     </div>
 
-                    <div className="project-bar" style={{ left: `${barLeft}%`, width: `${barWidth}%`,}}/>
+                    <div
+                      className="project-bar"
+                      style={{
+                        left: `${barLeft}px`,
+                        width: `${barWidth}px`
+                      }}
+                    />
 
-                    {project.issues.map((issue) => {
-                      const issueDate = issue.dateValue!;
-                      const issuePosition = getPosition(issueDate, timelineStart, timelineEnd);
+                    {issuesWithPositions.map((issue) => (
+                      <div
+                        key={issue.id}
+                        className={`milestone-wrapper priority-${getPriorityClass(issue.priority)}`}
+                        style={{
+                          left: `${issue.position}px`,
+                          top: "38px"
+                        }}
+                      >
+                        <div className="issue-dot" />
 
-                      return (
-                        <div key={issue.id} className={`milestone-wrapper priority-${getPriorityClass(issue.priority)} ${issueDate < today ? "is-past" : "is-upcoming"}`} style={{ left: `${issuePosition}%`, }}>
-                          <div className="issue-dot" />
+                        <span className="milestone-code">
+                          {(issue.projectName || project.name || "PRJ")
+                            .slice(0, 3)
+                            .toUpperCase()}-{issue.id.slice(0, 3).toUpperCase()}
+                        </span>
 
-                          <div className="issue-label">
-                            <span>{issue.title}</span>
-                            <small>{formatMonthDay(issueDate)}</small>
-                          </div>
+                        <div className="issue-label">
+                          <span>{issue.title}</span>
+                          <small>{formatMonthDay(issue.dateValue)}</small>
                         </div>
-                      );
-                    })}
+                      </div>
+                    ))}
                   </div>
                 </section>
               );
