@@ -467,3 +467,98 @@
   margin-top: 0; /* Remove the inherited 2rem margin */
   resize: vertical;
 }
+
+/* ==============================
+   MARKDOWN PREVIEW
+============================== */
+
+.markdown-preview {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 4px;
+  color: #e5e5e5;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* Headings */
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4 {
+  color: #ffffff;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 20px 0 10px;
+}
+
+/* Paragraphs */
+.markdown-preview p {
+  margin: 8px 0 12px;
+}
+
+/* Numbered lists */
+.markdown-preview ol {
+  display: block;
+  list-style-type: decimal;
+  list-style-position: outside;
+  padding-left: 28px;
+  margin: 12px 0 18px;
+}
+
+/* Bullet lists */
+.markdown-preview ul {
+  display: block;
+  list-style-type: disc;
+  list-style-position: outside;
+  padding-left: 28px;
+  margin: 12px 0 18px;
+}
+
+/* Individual list items */
+.markdown-preview li {
+  display: list-item;
+  padding-left: 4px;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+/* Nested lists */
+.markdown-preview li > ul,
+.markdown-preview li > ol {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+/* Bold text */
+.markdown-preview strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Italic text */
+.markdown-preview em {
+  font-style: italic;
+}
+
+/* Horizontal separators */
+.markdown-preview hr {
+  border: none;
+  border-top: 1px solid #444;
+  margin: 20px 0;
+}
+
+/* Code */
+.markdown-preview code {
+  background: #292929;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+.markdown-preview pre {
+  background: #111;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+}

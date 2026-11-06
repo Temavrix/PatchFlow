@@ -9,6 +9,11 @@ import patchicon from "./assets/patchicon.png";
 import boardshowcase from "./assets/boardshowcase.png";
 import roadmapshowcase from "./assets/roadmapshowcase.png"
 import analyticsshowcase from "./assets/analyticsshowcase.png";
+import Aishowcaseone from "./assets/Aishowcaseone.png";
+import Aishowcasetwo from "./assets/Aishowcasetwo.png";
+import Aishowcasethree from "./assets/Aishowcasethree.png";
+import issuesshowcase from "./assets/issuesshowcase.png";
+import githubshowcase from "./assets/githubshowcase.png";
 
 function Login() {
   const navigate = useNavigate();
@@ -81,24 +86,70 @@ function Login() {
             Plan and navigate from idea to launch. Align your priorities
             with product updates, strategic roadmaps and deadlines.
           </p>
-        </div>
+        </div> 
 
         <div className="roadmap-visual">
-          <img
-            src={roadmapshowcase}
-            alt="PatchFlow Roadmap"
-            className="roadmap-image"
-          />
+          <img src={roadmapshowcase} alt="PatchFlow Roadmap" className="roadmap-image"/>
 
           <div className="analytics-visual">
-            <img
-              src={analyticsshowcase}
-              alt="PatchFlow Analytics"
-              className="analytics-image"
-            />
+            <img src={analyticsshowcase} alt="PatchFlow Analytics" className="analytics-image"/>
           </div>
         </div>
       </section>
+
+      <section className="fouone">
+        <div className="fourth-heading">
+          <h2>AI Agents</h2>
+          <p>
+            Build and deploy with AI agents that work alongside you as teammates by
+            working to analyze and identify bottlenecks together.
+          </p>
+        </div>
+
+        <div className="ai-showcase">
+          <img src={Aishowcaseone} alt="AI Agent showcase one" />
+          <img src={Aishowcasetwo} alt="AI Agent showcase two" />
+          <img src={Aishowcasethree} alt="AI Agent showcase three" />
+        </div>
+      </section>
+
+      <section className="fifthone">
+        <div className="fifth-heading">
+          <h2>Intake and integrations</h2>
+          <p>
+            Connect GitHub to automate PR workflows, sync issues and understand your issues in PatchFlow.
+          </p>
+        </div>
+
+        <div className="roadmap-visual">
+          <img src={issuesshowcase} alt="PatchFlow Issues" className="roadmap-image"/>
+
+          <div className="analytics-visual">
+            <img src={githubshowcase} alt="PatchFlow Github" className="analytics-image"/>
+          </div>
+        </div>
+      </section>
+
+      <section className="base">
+        <div className="fifth-heading">
+          <h2>Built for the future.<br/>Available today.</h2><br/>
+          <button className="button" onClick={googleSignIn}>Get Started Today</button>
+        </div>
+      </section>
+
+      <footer className="site-footer">
+        <div className="footer-content">
+          <div className="footer-brand">
+            <img src={patchicon} alt="PatchFlow" />
+            <span>PatchFlow</span>
+          </div>
+
+          <p>
+            © {new Date().getFullYear()} Temavrix
+            All rights reserved.
+          </p>
+        </div>
+      </footer>
     </>
   );
 }

@@ -105,15 +105,7 @@ body {
 }
 
 
-
-
-
-
-
-
-
-
-
+/* SECOND SECTION SHOWCASE */
 .secone {
   position: relative;
   isolation: isolate;
@@ -234,17 +226,7 @@ body {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
+/* THIRD SECTION PLANNING & MONITORING */
 .thirone {
   position: relative;
   isolation: isolate;
@@ -375,8 +357,8 @@ body {
   right: 2%;
   z-index: 1;
   box-shadow:
-    0 30px 60px rgba(0, 0, 0, 0.55),
-    0 60px 120px rgba(0, 0, 0, 0.35);
+    0 30px 60px rgba(0, 0, 0, 0),
+    0 60px 120px rgba(0, 0, 0, 0);
 }
 
 /* Analytics screenshot */
@@ -385,7 +367,7 @@ body {
   width: 100%;
   height: auto;
   border-radius: 20px;
-  filter: brightness(0.75);
+  filter: brightness(0.8);
   top: -8%;
   right: 2%;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -419,11 +401,7 @@ body {
 }
 
 
-
-
-
-
-
+/* FOURTH SECTION AI AGENTS */
 .fouone {
   position: relative;
   isolation: isolate;
@@ -505,34 +483,172 @@ body {
   transition: transform 0.4s ease, border-color 0.4s ease;
 }
 
-.ai-showcase img:hover {
-  transform: translateY(-6px);
-  border-color: rgba(255, 255, 255, 0.25);
+.fouone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  background:
+    /* Bottom fade */
+    linear-gradient(
+      to bottom,
+      transparent 65%,
+      rgba(8, 9, 11, 0.2) 60%,
+      rgba(8, 9, 11, 0.8) 80%,
+      #08090b 100%
+    ),
+
+    /* Left fade */
+    linear-gradient(
+      to right,
+      #08090b 0%,
+      rgba(8, 9, 11, 0.65) 10%,
+      transparent 25%
+    ),
+
+    /* Right fade */
+    linear-gradient(
+      to left,
+      #08090b 0%,
+      rgba(8, 9, 11, 0.65) 10%,
+      transparent 25%
+    ),
+
+    /* General vignette */
+    radial-gradient(
+      ellipse at center,
+      transparent 100%,
+      rgba(8, 9, 11, 0.55) 100%
+    );
 }
 
-/* Responsive layout */
-@media (max-width: 900px) {
-  .ai-showcase {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+
+/* FIFTH SECTION INTEGRATION */
+.fifthone {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: 100vh;
+  padding: 110px 5% 100px;
+  overflow: hidden;
+  background: #08090a;
 }
 
-@media (max-width: 600px) {
-  .ai-showcase {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    margin-top: 45px;
-  }
+/* Background lighting */
+.fifthone::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+
+  width: 120%;
+  height: 750px;
+  left: -10%;
+  top: 250px;
+
+  background: radial-gradient(
+    ellipse at center,
+    rgba(110, 115, 130, 0.17),
+    rgba(8, 9, 11, 0.8) 0%,
+    transparent 75%
+  );
+
+  filter: blur(70px);
 }
 
+/* Heading */
+.fifth-heading {
+  position: relative;
+  z-index: 4;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
 
+.fifth-heading h2 {
+  font-size: clamp(42px, 5vw, 68px);
+  line-height: 1.08;
+  letter-spacing: -3px;
+  font-weight: 600;
+  color: #f5f5f7;
+}
 
+.fifth-heading p {
+  margin-top: 22px;
+  color: #92939d;
+  font-size: 17px;
+  line-height: 1.7;
+}
 
+/* AI showcase images */
+.integ-showcase {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 
+  width: 100%;
+  max-width: 1450px;
+  margin: 75px auto 0;
 
+  align-items: start;
+}
 
+.integ-showcase img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
 
+  transition: transform 0.4s ease, border-color 0.4s ease;
+}
+
+.fifthone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+
+  background:
+    /* Bottom fade */
+    linear-gradient(
+      to bottom,
+      transparent 100%,
+      rgba(8, 9, 11, 0.25) 99%,
+      rgba(8, 9, 11, 0.8) 80%,
+      #08090b 100%
+    ),
+
+    /* Left fade */
+    linear-gradient(
+      to right,
+      #08090b 0%,
+      rgba(8, 9, 11, 0.65) 0%,
+      transparent 2%
+    ),
+
+    /* Right fade */
+    linear-gradient(
+      to left,
+      #08090b 0%,
+      rgba(8, 9, 11, 0.65) 10%,
+      transparent 25%
+    ),
+
+    /* General vignette */
+    radial-gradient(
+      ellipse at center,
+      transparent 100%,
+      rgba(8, 9, 11, 0.55) 100%
+    );
+}
+
+/* MOBILE SUPPORT */
 @media (max-width: 800px) {
   .base {
     flex-direction: column;
@@ -594,7 +710,126 @@ body {
   }
 
   .analytics-image {
-    border-radius: 22px;
+    border-radius: 10px;
   }
 
+  .ai-showcase {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ai-showcase img:not(:first-child) {
+    display: none;
+  }
+
+  .ai-showcase {
+    grid-template-columns: 1fr;
+  }
+
+  .fouone {
+    padding: 55px 20px 65px;
+  }
+}
+
+
+/* SECTION SPACING IMPROVEMENTS */
+/* Product showcase */
+.secone {
+  min-height: auto;
+  padding: 75px 7% 75px;
+}
+
+.product-visual {
+  margin-top: 70px;
+}
+
+/* Planning and monitoring */
+.thirone {
+  min-height: auto;
+  padding: 75px 5% 75px;
+}
+
+.roadmap-visual {
+  margin-top: 65px;
+}
+
+/* AI Agents */
+.fouone {
+  min-height: auto;
+  padding: 75px 5% 75px;
+}
+
+.ai-showcase {
+  margin-top: 55px;
+}
+
+/* Intake and integrations */
+.fifthone {
+  min-height: auto;
+  padding: 75px 5% 75px;
+}
+
+.fifthone .roadmap-visual {
+  margin-top: 65px;
+}
+
+/* Final CTA section */
+.base:last-of-type {
+  min-height: auto;
+  padding: 75px 10%;
+}
+
+
+/* FOOTER */
+.site-footer {
+  width: 100%;
+  background: #08090b;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 30px 7%;
+}
+
+.footer-content {
+  max-width: 1450px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}
+
+.footer-brand img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.footer-content p {
+  color: #777983;
+  font-size: 13px;
+}
+
+@media (max-width: 800px) {
+  .site-footer {
+    padding: 25px 20px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .footer-content p {
+    font-size: 12px;
+  }
 }
